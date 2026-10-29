@@ -1,0 +1,21 @@
+{
+  "name": "docsafe-local-chain",
+  "version": "1.0.0",
+  "private": true,
+  "description": "DocSafe smart-contract development environment",
+  "scripts": {
+    "chain": "hardhat node",
+    "compile": "hardhat compile",
+    "deploy:local": "hardhat run scripts/deploy-local.cjs --network localhost",
+    "test": "hardhat test",
+    "fe:dev": "npm --prefix safeDocFe run dev",
+    "fe:build": "npm --prefix safeDocFe run build",
+    "fe:lint": "npm --prefix safeDocFe run lint",
+    "be:start": "npm --prefix safeDocBe start"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.1.0",
+    "ethers": "^6.17.0",
+    "hardhat": "^2.26.3"
+  }
+}
