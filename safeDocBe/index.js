@@ -1,16 +1,26 @@
-// Gracefully load .env if present (Node 20.6+)
-try {
-  if (typeof process.loadEnvFile === "function") {
-    process.loadEnvFile();
+const fs = require("fs");
+const path = require("path");
+
+// Gracefully load .env from safeDocBe/ or current working directory (Node 20.6+)
+const possibleEnvPaths = [
+  path.join(__dirname, ".env"),
+  path.resolve(process.cwd(), ".env"),
+  path.resolve(process.cwd(), "safeDocBe", ".env"),
+];
+
+for (const envPath of possibleEnvPaths) {
+  try {
+    if (fs.existsSync(envPath) && typeof process.loadEnvFile === "function") {
+      process.loadEnvFile(envPath);
+      break;
+    }
+  } catch {
+    // Continue to next path
   }
-} catch {
-  // .env is optional; continue without error
 }
 
 const express = require("express");
 const multer = require("multer");
-const fs = require("fs");
-const path = require("path");
 const { PinataSDK } = require("pinata-web3");
 const { File } = require("buffer");
 
@@ -23,9 +33,21 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-// CORS middleware allowing frontend (e.g. Vite on localhost:5173)
+// Allowed origins for CORS (Vite development server)
+const ALLOWED_ORIGINS = new Set([
+  "http://localhost:5173",
+  "http://127.0.0.1:5173"
+]);
+
+// CORS middleware allowing frontend
 app.use((req, res, next) => {
-  res.header("Access-Control-Allow-Origin", "*");
+  const origin = req.headers.origin;
+  if (origin && ALLOWED_ORIGINS.has(origin)) {
+    res.header("Access-Control-Allow-Origin", origin);
+  } else if (!origin) {
+    // Non-browser or same-origin requests
+    res.header("Access-Control-Allow-Origin", "http://localhost:5173");
+  }
   res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
   if (req.method === "OPTIONS") {
@@ -34,10 +56,29 @@ app.use((req, res, next) => {
   next();
 });
 
-// Configure Multer for file uploads with 10MB limit
+// Allowed MIME types for digital evidence (documents, images, audio, video, reports)
+const ALLOWED_MIME_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  "text/plain",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "audio/mpeg",
+  "audio/wav",
+  "audio/ogg",
+  "audio/mp4",
+  "video/mp4",
+  "video/quicktime",
+  "video/x-msvideo",
+  "video/x-matroska"
+]);
+
+// Configure Multer for file uploads with 100MB limit
 const upload = multer({
   dest: uploadsDir,
-  limits: { fileSize: 10 * 1024 * 1024 }
+  limits: { fileSize: 100 * 1024 * 1024 }
 });
 
 // Initialize Pinata SDK
@@ -59,15 +100,23 @@ app.get("/health", (req, res) => {
 });
 
 // Upload file to Pinata IPFS
-app.post("/upload", upload.any(), async (req, res) => {
-  if (!req.files || req.files.length === 0) {
+app.post("/upload", upload.single("file"), async (req, res) => {
+  if (!req.file) {
     return res.status(400).json({ success: false, message: "No file was uploaded." });
   }
 
-  const uploadedFile = req.files[0];
+  const uploadedFile = req.file;
   const filePath = uploadedFile.path;
 
   try {
+    // Validate MIME type
+    if (!ALLOWED_MIME_TYPES.has(uploadedFile.mimetype)) {
+      return res.status(400).json({
+        success: false,
+        message: `File type "${uploadedFile.mimetype}" is not permitted. Allowed types include PDF, Word documents, text, images, audio, and video.`
+      });
+    }
+
     if (!process.env.PINATA_JWT) {
       return res.status(503).json({
         success: false,
@@ -83,7 +132,10 @@ app.post("/upload", upload.any(), async (req, res) => {
 
     res.json({
       success: true,
-      ipfsHash: uploadResponse.IpfsHash
+      ipfsHash: uploadResponse.IpfsHash,
+      fileName: uploadedFile.originalname,
+      fileSize: uploadedFile.size,
+      mimeType: uploadedFile.mimetype
     });
   } catch (error) {
     console.error("Upload error:", error.message || error);
@@ -114,7 +166,16 @@ app.get("/get/:cid", async (req, res) => {
     if (fileResponse.contentType) {
       res.setHeader("Content-Type", fileResponse.contentType);
     }
-    res.send(fileResponse.data);
+
+    // Pinata SDK returns a Web Blob; convert to Node Buffer for Express binary streaming
+    if (fileResponse.data && typeof fileResponse.data.arrayBuffer === "function") {
+      const arrayBuffer = await fileResponse.data.arrayBuffer();
+      res.send(Buffer.from(arrayBuffer));
+    } else if (typeof fileResponse.data === "string" || Buffer.isBuffer(fileResponse.data)) {
+      res.send(fileResponse.data);
+    } else {
+      res.send(fileResponse.data);
+    }
   } catch (error) {
     console.error("Retrieval error:", error.message || error);
     res.status(500).json({ success: false, message: "Retrieval failed." });

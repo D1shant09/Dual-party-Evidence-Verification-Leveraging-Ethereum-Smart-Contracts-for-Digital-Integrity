@@ -209,4 +209,125 @@ describe("DocumentVerification Contract", function () {
       );
     });
   });
+
+  describe("Dispute and Challenge Flow (Algorithm 2)", function () {
+    beforeEach(async function () {
+      await contract.connect(owner).addValidator(validator1.address);
+      await contract.connect(provider).addEmptyDocument(recipient.address);
+      await contract.connect(recipient).approveDocumentChange(1n);
+      await contract.connect(provider).updateDocument(1n, "QmOriginalHash");
+      await contract.connect(recipient).validateDocument(1n);
+    });
+
+    it("puts validated document into change phase on forceUpdate and resets isValid", async function () {
+      let doc = await contract.getDocument(1n);
+      assert.equal(doc.isValid, true);
+      assert.equal(doc.isInChangePhase, false);
+
+      await contract.connect(provider).forceUpdateDocument(1n, "QmRevisedHash", "Lab revision note");
+
+      doc = await contract.getDocument(1n);
+      assert.equal(doc.ipfsHash, "QmRevisedHash");
+      assert.equal(doc.proof, "Lab revision note");
+      assert.equal(doc.isInChangePhase, true);
+      assert.equal(doc.isValid, false);
+    });
+
+    it("allows recipient to contest force update via challengeDocument", async function () {
+      await contract.connect(provider).forceUpdateDocument(1n, "QmRevisedHash", "Lab revision note");
+
+      await contract.connect(recipient).challengeDocument(1n, "QmCounterHash", "Witness statement text");
+
+      const doc = await contract.getDocument(1n);
+      assert.equal(doc.ipfsHash, "QmCounterHash");
+      assert.equal(doc.isInChangePhase, false);
+    });
+
+    it("clears change phase when recipient validates document", async function () {
+      await contract.connect(provider).forceUpdateDocument(1n, "QmRevisedHash", "Lab revision note");
+      assert.equal((await contract.getDocument(1n)).isInChangePhase, true);
+
+      await contract.connect(recipient).validateDocument(1n);
+
+      const doc = await contract.getDocument(1n);
+      assert.equal(doc.isValid, true);
+      assert.equal(doc.isInChangePhase, false);
+    });
+
+    it("clears change phase when validators finalize arbitration", async function () {
+      await contract.connect(provider).forceUpdateDocument(1n, "QmRevisedHash", "Lab revision note");
+      assert.equal((await contract.getDocument(1n)).isInChangePhase, true);
+
+      await contract.connect(validator1).validateFromValidators(1n);
+
+      const doc = await contract.getDocument(1n);
+      assert.equal(doc.isValid, true);
+      assert.equal(doc.isInChangePhase, false);
+    });
+
+    it("prevents validator deadlock across re-disputed rounds", async function () {
+      // First force update - round 1
+      await contract.connect(provider).forceUpdateDocument(1n, "QmRound1Hash", "Proof 1");
+      assert.equal(await contract.disputeRounds(1n), 1n);
+
+      // Validator1 votes in round 1
+      await contract.connect(validator1).validateFromValidators(1n);
+      assert.equal(await contract.hasValidated(1n, validator1.address), true);
+
+      // Re-voting in same round fails
+      await assert.rejects(
+        contract.connect(validator1).validateFromValidators(1n),
+        /Already validated by this validator/
+      );
+
+      // Subsequent dispute / force update creates round 2 and resets vote counter
+      await contract.connect(provider).forceUpdateDocument(1n, "QmRound2Hash", "Proof 2");
+      assert.equal(await contract.disputeRounds(1n), 2n);
+      assert.equal(await contract.validations(1n), 0n);
+      assert.equal(await contract.hasValidated(1n, validator1.address), false);
+
+      // Validator1 can vote again in round 2 without deadlock
+      await contract.connect(validator1).validateFromValidators(1n);
+      assert.equal(await contract.validations(1n), 1n);
+      assert.equal(await contract.hasValidated(1n, validator1.address), true);
+    });
+  });
+
+  describe("Access-Gated Document Inspection", function () {
+    beforeEach(async function () {
+      await contract.connect(owner).addValidator(validator1.address);
+      await contract.connect(provider).addEmptyDocument(recipient.address);
+      await contract.connect(recipient).approveDocumentChange(1n);
+      await contract.connect(provider).updateDocument(1n, "QmSensitiveEvidence");
+    });
+
+    it("restricts getDocument to authorized actors", async function () {
+      // Provider, recipient, validator, and owner can inspect
+      assert.equal((await contract.connect(provider).getDocument(1n)).ipfsHash, "QmSensitiveEvidence");
+      assert.equal((await contract.connect(recipient).getDocument(1n)).ipfsHash, "QmSensitiveEvidence");
+      assert.equal((await contract.connect(validator1).getDocument(1n)).ipfsHash, "QmSensitiveEvidence");
+      assert.equal((await contract.connect(owner).getDocument(1n)).ipfsHash, "QmSensitiveEvidence");
+
+      // Unauthorized party cannot inspect
+      await assert.rejects(
+        contract.connect(unauthorized).getDocument(1n),
+        /Access denied: Not authorized to view document/
+      );
+
+      // Once approved, viewer can inspect
+      await contract.connect(recipient).approveViewer(1n, viewer.address);
+      assert.equal((await contract.connect(viewer).getDocument(1n)).ipfsHash, "QmSensitiveEvidence");
+
+      // Once revoked, viewer cannot inspect
+      await contract.connect(recipient).revokeViewer(1n, viewer.address);
+      await assert.rejects(
+        contract.connect(viewer).getDocument(1n),
+        /Access denied: Not authorized to view document/
+      );
+    });
+
+    it("shields documents mapping from public access", async function () {
+      assert.equal(contract.documents, undefined);
+    });
+  });
 });

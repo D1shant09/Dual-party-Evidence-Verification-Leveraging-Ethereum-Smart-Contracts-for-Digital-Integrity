@@ -277,8 +277,14 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "documentCount",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "disputeRounds",
     "outputs": [
       {
         "internalType": "uint256",
@@ -290,44 +296,13 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "documentCount",
+    "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
-      }
-    ],
-    "name": "documents",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "ipfsHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "provider",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isValid",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isInChangePhase",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "proof",
-        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -449,6 +424,86 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "documentId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getValidDocument",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "ipfsHash",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "provider",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "recipient",
+            "type": "address"
+          },
+          {
+            "internalType": "bool",
+            "name": "isValid",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "isInChangePhase",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "proof",
+            "type": "string"
+          }
+        ],
+        "internalType": "struct DocumentVerification.Document",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "documentId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "validator",
+        "type": "address"
+      }
+    ],
+    "name": "hasValidated",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       },
@@ -458,7 +513,7 @@
         "type": "address"
       }
     ],
-    "name": "hasValidated",
+    "name": "hasValidatedRound",
     "outputs": [
       {
         "internalType": "bool",
@@ -553,50 +608,6 @@
     "name": "updateDocument",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "validDocuments",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "ipfsHash",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "provider",
-        "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "recipient",
-        "type": "address"
-      },
-      {
-        "internalType": "bool",
-        "name": "isValid",
-        "type": "bool"
-      },
-      {
-        "internalType": "bool",
-        "name": "isInChangePhase",
-        "type": "bool"
-      },
-      {
-        "internalType": "string",
-        "name": "proof",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {

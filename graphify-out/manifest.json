@@ -8,8 +8,8 @@
   "contracts/safedoc.sol": {
     "mtime": 1793286905.318696,
     "seen": 1794211214.5073576,
-    "ast_hash": "6889901e9a1923a1d0a55feda88a2362",
-    "semantic_hash": "6889901e9a1923a1d0a55feda88a2362"
+    "ast_hash": "",
+    "semantic_hash": ""
   },
   "hardhat.config.cjs": {
     "mtime": 1793261228.0,
@@ -36,10 +36,10 @@
     "semantic_hash": "db2288e1f46a324927bb7c96b5d5612e"
   },
   "safeDocBe/index.js": {
-    "mtime": 1793287279.9059184,
-    "seen": 1794211214.507376,
-    "ast_hash": "6956e3161d06cd8b6ada40e91d52aa5f",
-    "semantic_hash": "6956e3161d06cd8b6ada40e91d52aa5f"
+    "mtime": 1794246270.1917026,
+    "seen": 1794246616.9134128,
+    "ast_hash": "7c7e9433d22a4bf8cfe0ea72e7d08a5e",
+    "semantic_hash": ""
   },
   "safeDocBe/package.json": {
     "mtime": 1793287288.6039414,
@@ -48,10 +48,10 @@
     "semantic_hash": "e657a1429b84e29abcb530a285e16cdd"
   },
   "safeDocFe/eslint.config.js": {
-    "mtime": 1742265440.0,
-    "seen": 1794211214.5073802,
-    "ast_hash": "bfe13b9e25d0af7959d0396aa103d88c",
-    "semantic_hash": "bfe13b9e25d0af7959d0396aa103d88c"
+    "mtime": 1794241058.6870806,
+    "seen": 1794241657.136131,
+    "ast_hash": "fdc1a04a6e0af73ee02ac5359c645d61",
+    "semantic_hash": ""
   },
   "safeDocFe/package.json": {
     "mtime": 1742265440.0,
@@ -60,16 +60,16 @@
     "semantic_hash": "718960b1b86fd2c497d664da035890b6"
   },
   "safeDocFe/src/ABI/DocumentVerificationABI.json": {
-    "mtime": 1793300321.4791546,
-    "seen": 1794211214.5073845,
-    "ast_hash": "5c2abd08eb6db12296bd7e509eba5449",
-    "semantic_hash": "5c2abd08eb6db12296bd7e509eba5449"
+    "mtime": 1794248481.3181658,
+    "seen": 1794248792.5917854,
+    "ast_hash": "f6f258d7c5138a440c31f403c84de72e",
+    "semantic_hash": ""
   },
   "safeDocFe/src/App.jsx": {
-    "mtime": 1742265440.0,
-    "seen": 1794211214.507387,
-    "ast_hash": "6c592c42292632f839de14240898a685",
-    "semantic_hash": "6c592c42292632f839de14240898a685"
+    "mtime": 1794239094.9941263,
+    "seen": 1794239271.716257,
+    "ast_hash": "a46d36ccb9befb886e4d3f2122909038",
+    "semantic_hash": ""
   },
   "safeDocFe/src/Home.jsx": {
     "mtime": 1793287070.0203316,
@@ -102,10 +102,10 @@
     "semantic_hash": "6c0e1b42360650b6b13dfdadddf7b673"
   },
   "safeDocFe/src/components/Home/navbar/Navbar.jsx": {
-    "mtime": 1793287101.4204512,
-    "seen": 1794211214.5074003,
-    "ast_hash": "e2599661686d97024ce2c01838c3e8e0",
-    "semantic_hash": "e2599661686d97024ce2c01838c3e8e0"
+    "mtime": 1794239112.1232874,
+    "seen": 1794239271.716355,
+    "ast_hash": "2a57be2cc5fe7a742add25414678b1d1",
+    "semantic_hash": ""
   },
   "safeDocFe/src/components/provider/AddDoc.tsx": {
     "mtime": 1793287034.9721975,
@@ -114,10 +114,10 @@
     "semantic_hash": "4cbe0d01a59b74525f4d27ed0fded6ef"
   },
   "safeDocFe/src/components/provider/Provider.tsx": {
-    "mtime": 1793287148.3405817,
-    "seen": 1794211214.5074053,
-    "ast_hash": "97e9499acee73929c9604e2266a25d1e",
-    "semantic_hash": "97e9499acee73929c9604e2266a25d1e"
+    "mtime": 1794238850.5530396,
+    "seen": 1794239271.7163792,
+    "ast_hash": "2cd9f9655a9bfa19a883ac0494f5e87f",
+    "semantic_hash": ""
   },
   "safeDocFe/src/components/reciepient/Reciepient.jsx": {
     "mtime": 1793287124.6765242,
@@ -126,16 +126,16 @@
     "semantic_hash": "3660683cca71c1b5b1f189ceff0218b6"
   },
   "safeDocFe/src/components/reciepient/ShowDocumentStages.jsx": {
-    "mtime": 1793287060.437295,
-    "seen": 1794211214.507409,
-    "ast_hash": "9626fcb7ac673e620d8511b8d6dda80f",
-    "semantic_hash": "9626fcb7ac673e620d8511b8d6dda80f"
+    "mtime": 1794248634.4416466,
+    "seen": 1794248792.5923789,
+    "ast_hash": "0af84f6fda37d655dc3aac203d191294",
+    "semantic_hash": ""
   },
   "safeDocFe/src/constants/constants.jsx": {
-    "mtime": 1793300321.4791546,
-    "seen": 1794211214.507412,
-    "ast_hash": "1bb6853cef521351897cee7a18f01a45",
-    "semantic_hash": "1bb6853cef521351897cee7a18f01a45"
+    "mtime": 1794248481.3181658,
+    "seen": 1794248792.5923853,
+    "ast_hash": "7686f489bda67f384e8cb1583b96e068",
+    "semantic_hash": ""
   },
   "safeDocFe/src/main.jsx": {
     "mtime": 1742265440.0,
@@ -162,10 +162,10 @@
     "semantic_hash": "fa15544f097bdc1c0c7c6e8584b8bb66"
   },
   "test/safedoc.test.cjs": {
-    "mtime": 1793286969.8109467,
-    "seen": 1794211214.5074232,
-    "ast_hash": "02b1ba9f9774c0529fce6a6b4c375003",
-    "semantic_hash": "02b1ba9f9774c0529fce6a6b4c375003"
+    "mtime": 1794248457.0620892,
+    "seen": 1794248792.59259,
+    "ast_hash": "767bb9802cfb7f70d3ff4ace200abd64",
+    "semantic_hash": ""
   },
   "GEMINI.md": {
     "mtime": 1794210227.7019048,
@@ -208,5 +208,77 @@
     "seen": 1794211214.5074391,
     "ast_hash": "f0402b67b6ce880f65666bb49e841696",
     "semantic_hash": "f0402b67b6ce880f65666bb49e841696"
+  },
+  "safeDocFe/src/components/admin/AdminConsole.jsx": {
+    "mtime": 1794248681.7768202,
+    "seen": 1794248792.5921183,
+    "ast_hash": "c6bf9613efbbf7f6bbab6034183f70ef",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/provider/ProviderDocuments.jsx": {
+    "mtime": 1794248645.786686,
+    "seen": 1794248792.5922182,
+    "ast_hash": "81347003f04b457c6c8fbb4ad76bc8c9",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/provider/UploadEvidenceModal.jsx": {
+    "mtime": 1794248697.3068776,
+    "seen": 1794248792.5922213,
+    "ast_hash": "4035b22ed3537292ddca581be01bbea2",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/reciepient/ChallengeModal.jsx": {
+    "mtime": 1794241128.0406342,
+    "seen": 1794241657.13665,
+    "ast_hash": "b3c0e62d23def6616d9b1b15a6b203af",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/reciepient/EvidencePreview.jsx": {
+    "mtime": 1794241437.5355904,
+    "seen": 1794241657.1366527,
+    "ast_hash": "f27a800f25d41d120cd8fa484d6dd96b",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/viewer/ViewerPortal.jsx": {
+    "mtime": 1794248670.203777,
+    "seen": 1794248792.5923824,
+    "ast_hash": "6e08ca5c7cff07c9c8f92535bbdf5653",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/services/api.js": {
+    "mtime": 1794241031.998853,
+    "seen": 1794241657.1368687,
+    "ast_hash": "cc8b0bc62e20406a105128cc1936ee1d",
+    "semantic_hash": ""
+  },
+  "pinata-starter/sample.pdf": {
+    "mtime": 1742265440.0,
+    "seen": 1794239271.7166543,
+    "ast_hash": "da49bbe37855af62a6a8809453d17b83",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1793283032.572942,
+    "seen": 1794239271.7166934,
+    "ast_hash": "ab7317ead8e146428efb7c2907efdbdf",
+    "semantic_hash": ""
+  },
+  "pinata-starter/package-lock.json": {
+    "mtime": 1742265440.0,
+    "seen": 1794239271.7166948,
+    "ast_hash": "9241b9345c6fad9f417a61679e13e298",
+    "semantic_hash": ""
+  },
+  "safeDocBe/package-lock.json": {
+    "mtime": 1793281595.9941623,
+    "seen": 1794239271.7166958,
+    "ast_hash": "8e14955618531662e49138627d3bac44",
+    "semantic_hash": ""
+  },
+  "safeDocFe/package-lock.json": {
+    "mtime": 1793283394.4069698,
+    "seen": 1794239271.7166967,
+    "ast_hash": "eff841c9e3ebd67349992cb0578ea653",
+    "semantic_hash": ""
   }
 }

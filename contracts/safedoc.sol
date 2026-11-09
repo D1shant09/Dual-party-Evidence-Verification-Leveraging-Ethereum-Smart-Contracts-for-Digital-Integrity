@@ -15,13 +15,14 @@ contract DocumentVerification {
 
     mapping(address => uint256[]) public providerDocs;
     mapping(address => uint256[]) public RecipientDocs;
-    mapping(uint256 => Document) public validDocuments;
-    mapping(uint256 => Document) public documents;
+    mapping(uint256 => Document) internal validDocuments;
+    mapping(uint256 => Document) internal documents;
     mapping(address => mapping(uint256 => bool)) public approvals;
     mapping(address => mapping(uint256 => bool)) public viewers;
     mapping(uint256 => uint256) public validations; // Tracks validation count per document
     mapping(address => bool) public validators; // Tracks approved validators
-    mapping(uint256 => mapping(address => bool)) public hasValidated; // Tracks if validator already voted for document
+    mapping(uint256 => uint256) public disputeRounds; // Tracks dispute round per document
+    mapping(uint256 => mapping(uint256 => mapping(address => bool))) public hasValidatedRound; // docId => round => validator => voted
     uint256 public validationLimit = 1; // Configurable validation limit
     uint256 public documentCount;
 
@@ -90,6 +91,7 @@ contract DocumentVerification {
 
     function validateDocument(uint256 documentId) public onlyRecipient(documentId) {
         documents[documentId].isValid = true;
+        documents[documentId].isInChangePhase = false;
         validDocuments[documentId] = documents[documentId]; // Move to validDocuments
         emit DocumentValidated(documentId, msg.sender);
     }
@@ -98,8 +100,11 @@ contract DocumentVerification {
         if (documents[documentId].isValid) {
             validDocuments[documentId] = documents[documentId]; // Save current valid document
         }
+        disputeRounds[documentId]++;
+        validations[documentId] = 0;
         documents[documentId].ipfsHash = newIpfsHash;
         documents[documentId].isInChangePhase = true;
+        documents[documentId].isValid = false;
         documents[documentId].proof = proof;
         emit DocumentChallenge(documentId, newIpfsHash, proof, "");
     }
@@ -112,14 +117,20 @@ contract DocumentVerification {
     }
 
     function validateFromValidators(uint256 documentId) public onlyValidator {
-        require(!hasValidated[documentId][msg.sender], "Already validated by this validator");
-        hasValidated[documentId][msg.sender] = true;
+        uint256 currentRound = disputeRounds[documentId];
+        require(!hasValidatedRound[documentId][currentRound][msg.sender], "Already validated by this validator");
+        hasValidatedRound[documentId][currentRound][msg.sender] = true;
         validations[documentId]++;
         if (validations[documentId] >= validationLimit) {
             documents[documentId].isValid = true;
+            documents[documentId].isInChangePhase = false;
             validDocuments[documentId] = documents[documentId]; // Move to validDocuments
             emit DocumentValidated(documentId, msg.sender);
         }
+    }
+
+    function hasValidated(uint256 documentId, address validator) external view returns (bool) {
+        return hasValidatedRound[documentId][disputeRounds[documentId]][validator];
     }
 
     function approveViewer(uint256 documentId, address viewer) public onlyRecipient(documentId) {
@@ -156,6 +167,26 @@ contract DocumentVerification {
     }
 
     function getDocument(uint256 documentId) external view returns (Document memory) {
+        require(
+            documents[documentId].provider == msg.sender ||
+            documents[documentId].recipient == msg.sender ||
+            viewers[msg.sender][documentId] ||
+            validators[msg.sender] ||
+            msg.sender == owner,
+            "Access denied: Not authorized to view document"
+        );
         return documents[documentId];
+    }
+
+    function getValidDocument(uint256 documentId) external view returns (Document memory) {
+        require(
+            documents[documentId].provider == msg.sender ||
+            documents[documentId].recipient == msg.sender ||
+            viewers[msg.sender][documentId] ||
+            validators[msg.sender] ||
+            msg.sender == owner,
+            "Access denied: Not authorized to view document"
+        );
+        return validDocuments[documentId];
     }
 }
