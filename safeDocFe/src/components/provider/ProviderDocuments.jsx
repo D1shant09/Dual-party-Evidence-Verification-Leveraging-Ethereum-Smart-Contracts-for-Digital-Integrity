@@ -97,6 +97,8 @@ export default function ProviderDocuments() {
 
   useEffect(() => {
     fetchDocuments();
+    const interval = setInterval(fetchDocuments, 4000);
+    return () => clearInterval(interval);
   }, [fetchDocuments]);
 
   // Handle force update submission (Algorithm 2)
@@ -227,6 +229,15 @@ export default function ProviderDocuments() {
       {fetchError && (
         <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">
           {fetchError}
+        </div>
+      )}
+
+      {documents.length === 0 && !loading && (
+        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs space-y-1">
+          <p className="font-semibold text-sm">No evidence containers found for address: <span className="font-mono text-xs">{address}</span></p>
+          <p className="text-amber-700">
+            If you created documents from a different account in MetaMask (e.g. Account 3 / 0x90F7...), please <strong>switch your active account in MetaMask</strong> to that address.
+          </p>
         </div>
       )}
 

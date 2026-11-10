@@ -89,6 +89,8 @@ const RecipientDocuments = () => {
 
   useEffect(() => {
     fetchDocuments();
+    const interval = setInterval(fetchDocuments, 4000);
+    return () => clearInterval(interval);
   }, [fetchDocuments]);
 
   useEffect(() => {

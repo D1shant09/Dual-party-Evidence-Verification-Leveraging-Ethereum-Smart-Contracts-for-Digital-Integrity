@@ -1,88 +1,27 @@
-# ==============================================================================
-# DocSafe — .gitignore
-# Prevents secrets, sensitive data, user uploads, build artifacts, and
-# dependencies from being committed or exposed publicly on GitHub.
-# ==============================================================================
+# Documentation
+Project documents/
 
-# --- Secrets, Credentials & Environment Files ---
+# Environment & Secrets
 .env
-.env.*
 *.env
-*.env.local
-*.env.development.local
-*.env.test.local
-*.env.production.local
-# Allow .env.example files as reference templates
+.env.*
 !.env.example
-!**/.env.example
+safeDocBe/.env
+safeDocFe/.env
 
-# Private keys, certificates, seed phrases & secret files
-*.pem
-*.key
-*.keystore
-*.pfx
-*.p12
-*.crt
-id_rsa*
-secrets.json
-
-# --- User Uploads & Private Document Storage ---
-# Prevent uploaded user files, PDFs, and documents from leaking into Git
-uploads/*
-**/uploads/*
-!uploads/.gitkeep
-!**/uploads/.gitkeep
-
-# --- Dependencies across all packages ---
+# Dependencies
 node_modules/
-**/node_modules/
-.pnp
-.pnp.js
+safeDocBe/node_modules/
+safeDocFe/node_modules/
 
-# --- Hardhat & Smart Contract Artifacts ---
+# Hardhat & Build Artifacts
 artifacts/
 cache/
-typechain/
-typechain-types/
-coverage/
-coverage.json
-.hardhat/
-
-# --- Frontend Build Outputs & Caches ---
 dist/
-**/dist/
 dist-ssr/
-**/dist-ssr/
-.vite/
-**/.vite/
-.eslintcache
-.turbo/
 
-# --- Logs, Reports & Temporary Audit Dumps ---
-logs/
+# Logs & Temporary Files
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-audit-report.json
-*-audit.json
-
-# --- OS & Editor Metadata ---
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-.idea/
-.vscode/*
-!.vscode/extensions.json
-!.vscode/settings.json
-*.sublime-workspace
-*.sublime-project
-*.swp
-*.swo
-*~
+uploads/
+safeDocBe/uploads/

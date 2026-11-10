@@ -5,7 +5,7 @@ import DocumentVerificationABI from "../../ABI/DocumentVerificationABI.json";
 import { CONTRACT_ADDRESS } from "./../../constants/constants";
 import { docSafeLocal } from "../../wagmi";
 
-const AddDocumentButton = () => {
+const AddDocumentButton = ({ onCreated }: { onCreated?: () => void }) => {
     const { isConnected } = useAccount();
     const chainId = useChainId();
     const { switchChain } = useSwitchChain();
@@ -114,8 +114,17 @@ const AddDocumentButton = () => {
                 )}
 
                 {isConfirmed && (
-                    <div className="p-3 bg-green-50 text-green-700 rounded border border-green-200 text-sm">
-                        Document container created successfully on local chain!
+                    <div className="p-3 bg-green-50 text-green-700 rounded border border-green-200 text-sm flex items-center justify-between">
+                        <span>Document container created successfully on local chain!</span>
+                        {onCreated && (
+                            <button
+                                type="button"
+                                onClick={onCreated}
+                                className="ml-3 px-3 py-1 bg-green-700 hover:bg-green-800 text-white rounded text-xs font-semibold shrink-0"
+                            >
+                                View in Records →
+                            </button>
+                        )}
                     </div>
                 )}
 

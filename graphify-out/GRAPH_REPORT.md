@@ -1,17 +1,17 @@
-# Graph Report - docsafe-main  (2026-11-09)
+# Graph Report - docsafe-main  (2026-11-10)
 
 ## Corpus Check
-- 39 files · ~15,557 words
+- 39 files · ~15,673 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 7 file(s) not represented in the graph (top: (none) 3, .example 2, .css 2)
 
 ## Summary
-- 211 nodes · 356 edges · 14 communities (10 shown, 4 thin omitted)
+- 211 nodes · 355 edges · 14 communities (10 shown, 4 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d056740e`
+- Built from commit: `b77cb6fc`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -40,7 +40,7 @@
 7. `App()` - 7 edges
 8. `docSafeLocal` - 7 edges
 9. `viem` - 6 edges
-10. `ProviderDocuments()` - 5 edges
+10. `Provider()` - 5 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Pinata IPFS Storage Integration` --semantically_similar_to--> `Pinata Sample PDF Asset`  [INFERRED] [semantically similar]
@@ -49,10 +49,10 @@
   safeDocFe/index.html → README.md
 - `Provider()` --calls--> `ProviderDocuments()`  [EXTRACTED]
   safeDocFe/src/components/provider/Provider.tsx → safeDocFe/src/components/provider/ProviderDocuments.jsx
-- `RecipientDocuments()` --calls--> `ChallengeModal()`  [EXTRACTED]
-  safeDocFe/src/components/reciepient/ShowDocumentStages.jsx → safeDocFe/src/components/reciepient/ChallengeModal.jsx
 - `RecipientDocuments()` --calls--> `EvidencePreview()`  [EXTRACTED]
   safeDocFe/src/components/reciepient/ShowDocumentStages.jsx → safeDocFe/src/components/reciepient/EvidencePreview.jsx
+- `ChallengeModal()` --calls--> `calculateSHA256()`  [EXTRACTED]
+  safeDocFe/src/components/reciepient/ChallengeModal.jsx → safeDocFe/src/services/api.js
 
 ## Import Cycles
 - 4-file cycle: `safeDocFe/src/App.jsx -> safeDocFe/src/Home.jsx -> safeDocFe/src/components/ConnectWallet.jsx -> safeDocFe/src/components/Account.jsx -> safeDocFe/src/App.jsx`
@@ -76,8 +76,8 @@ Cohesion: 0.09
 Nodes (21): App(), { File }, fs, get(), pinata, { PinataSDK }, upload(), ALLOWED_MIME_TYPES (+13 more)
 
 ### Community 3 - "wagmi"
-Cohesion: 0.25
-Nodes (14): react, viem, wagmi, ProviderDocuments(), ALLOWED_TYPES, UploadEvidenceModal(), ChallengeModal(), EvidencePreview() (+6 more)
+Cohesion: 0.26
+Nodes (13): react, viem, wagmi, ProviderDocuments(), ALLOWED_TYPES, UploadEvidenceModal(), EvidencePreview(), MIME_EXTENSION_MAP (+5 more)
 
 ### Community 4 - "src/Home.jsx"
 Cohesion: 0.21
@@ -96,8 +96,8 @@ Cohesion: 0.13
 Nodes (18): buffer, express, multer, author, dependencies, buffer@^6.0.3, express@^4.21.2, multer@^1.4.5-lts.1 (+10 more)
 
 ### Community 8 - "Document Verification UI Components"
-Cohesion: 0.27
-Nodes (8): App(), AdminConsole(), AddDocumentButton(), Provider(), Tab, Reciepient(), RecipientDocuments(), ViewerPortal()
+Cohesion: 0.24
+Nodes (9): App(), AdminConsole(), AddDocumentButton(), Provider(), Tab, ChallengeModal(), Reciepient(), RecipientDocuments() (+1 more)
 
 ### Community 9 - "deploy-local.cjs"
 Cohesion: 0.29
