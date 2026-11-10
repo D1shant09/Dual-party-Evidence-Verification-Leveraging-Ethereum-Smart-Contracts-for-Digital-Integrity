@@ -76,6 +76,50 @@
         "type": "uint256"
       },
       {
+        "indexed": true,
+        "internalType": "address",
+        "name": "reviewer",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "DocumentRejected",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "newDocumentId",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "previousDocumentId",
+        "type": "uint256"
+      }
+    ],
+    "name": "DocumentResubmitted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "documentId",
+        "type": "uint256"
+      },
+      {
         "indexed": false,
         "internalType": "string",
         "name": "newIpfsHash",
@@ -280,6 +324,49 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "previousDocumentId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "recipient",
+        "type": "address"
+      }
+    ],
+    "name": "createResubmission",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "previousDocumentId",
+        "type": "uint256"
+      }
+    ],
+    "name": "createResubmission",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
@@ -372,6 +459,21 @@
             "internalType": "string",
             "name": "proof",
             "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "sha256Hash",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRejected",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "rejectionReason",
+            "type": "string"
           }
         ],
         "internalType": "struct DocumentVerification.Document",
@@ -460,6 +562,21 @@
           {
             "internalType": "string",
             "name": "proof",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "sha256Hash",
+            "type": "string"
+          },
+          {
+            "internalType": "bool",
+            "name": "isRejected",
+            "type": "bool"
+          },
+          {
+            "internalType": "string",
+            "name": "rejectionReason",
             "type": "string"
           }
         ],
@@ -569,6 +686,24 @@
         "type": "uint256"
       },
       {
+        "internalType": "string",
+        "name": "reason",
+        "type": "string"
+      }
+    ],
+    "name": "rejectDocument",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "documentId",
+        "type": "uint256"
+      },
+      {
         "internalType": "address",
         "name": "viewer",
         "type": "address"
@@ -588,6 +723,29 @@
       }
     ],
     "name": "setValidationLimit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "documentId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "newIpfsHash",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "sha256Hash",
+        "type": "string"
+      }
+    ],
+    "name": "updateDocument",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

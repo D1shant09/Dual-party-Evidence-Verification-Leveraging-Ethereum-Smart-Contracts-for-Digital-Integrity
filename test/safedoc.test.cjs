@@ -330,4 +330,132 @@ describe("DocumentVerification Contract", function () {
       assert.equal(contract.documents, undefined);
     });
   });
+
+  describe("Rejection and Linked Resubmission Flow", function () {
+    const sampleSha256 = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855";
+
+    beforeEach(async function () {
+      await contract.connect(owner).addValidator(validator1.address);
+      await contract.connect(provider).addEmptyDocument(recipient.address);
+      await contract.connect(recipient).approveDocumentChange(1n);
+    });
+
+    it("stores sha256 hash when updating document with overloaded updateDocument", async function () {
+      await contract.connect(provider)["updateDocument(uint256,string,string)"](
+        1n,
+        "QmEvidenceWithSha",
+        sampleSha256
+      );
+
+      const doc = await contract.getDocument(1n);
+      assert.equal(doc.ipfsHash, "QmEvidenceWithSha");
+      assert.equal(doc.sha256Hash, sampleSha256);
+      assert.equal(doc.isRejected, false);
+    });
+
+    it("allows recipient to reject unvalidated evidence with reason", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmEvidenceBadQuality");
+
+      const rejectTx = await contract.connect(recipient).rejectDocument(1n, "Illegible scan of evidence");
+      const receipt = await rejectTx.wait();
+      assert.ok(receipt);
+
+      const doc = await contract.getDocument(1n);
+      assert.equal(doc.isRejected, true);
+      assert.equal(doc.rejectionReason, "Illegible scan of evidence");
+
+      // Verify rejected document cannot be approved or updated
+      await assert.rejects(
+        contract.connect(recipient).approveDocumentChange(1n),
+        /Cannot approve change on rejected document/
+      );
+      await assert.rejects(
+        contract.connect(provider).updateDocument(1n, "QmNewAttempt"),
+        /Recipient must approve the change/
+      );
+      await assert.rejects(
+        contract.connect(recipient).validateDocument(1n),
+        /Cannot validate rejected document/
+      );
+      await assert.rejects(
+        contract.connect(provider).forceUpdateDocument(1n, "QmForce", "Proof"),
+        /Document is rejected/
+      );
+    });
+
+    it("allows validator to reject unvalidated evidence", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmSuspiciousDoc");
+      await contract.connect(validator1).rejectDocument(1n, "Forensic hash mismatch");
+
+      const doc = await contract.getDocument(1n);
+      assert.equal(doc.isRejected, true);
+      assert.equal(doc.rejectionReason, "Forensic hash mismatch");
+    });
+
+    it("prevents unauthorized party from rejecting", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmDoc");
+      await assert.rejects(
+        contract.connect(unauthorized).rejectDocument(1n, "Unauthorized rejection"),
+        /Only recipient, validator, or owner can reject/
+      );
+    });
+
+    it("prevents rejecting validated document", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmValidDoc");
+      await contract.connect(recipient).validateDocument(1n);
+
+      await assert.rejects(
+        contract.connect(recipient).rejectDocument(1n, "Late rejection"),
+        /Cannot reject validated document/
+      );
+    });
+
+    it("prevents double rejection", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmDoc");
+      await contract.connect(recipient).rejectDocument(1n, "First rejection");
+
+      await assert.rejects(
+        contract.connect(recipient).rejectDocument(1n, "Second rejection"),
+        /Document already rejected/
+      );
+    });
+
+    it("allows provider to create resubmission linked to rejected document", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmRejectedDoc");
+      await contract.connect(recipient).rejectDocument(1n, "Chain of custody broken");
+
+      const resubmitTx = await contract.connect(provider)["createResubmission(uint256)"](1n);
+      const receipt = await resubmitTx.wait();
+      assert.ok(receipt);
+
+      assert.equal(await contract.documentCount(), 2n);
+      const newDoc = await contract.getDocument(2n);
+      assert.equal(newDoc.provider, provider.address);
+      assert.equal(newDoc.recipient, recipient.address);
+      assert.equal(newDoc.isRejected, false);
+      assert.equal(newDoc.isValid, false);
+
+      const pDocs = await contract.getProviderDocs(provider.address);
+      assert.deepEqual(pDocs.map(Number), [1, 2]);
+    });
+
+    it("prevents non-provider from creating resubmission", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmRejectedDoc");
+      await contract.connect(recipient).rejectDocument(1n, "Chain of custody broken");
+
+      await assert.rejects(
+        contract.connect(unauthorized)["createResubmission(uint256)"](1n),
+        /Only previous provider can resubmit/
+      );
+    });
+
+    it("prevents resubmission if previous document is not rejected", async function () {
+      await contract.connect(provider).updateDocument(1n, "QmActiveDoc");
+
+      await assert.rejects(
+        contract.connect(provider)["createResubmission(uint256)"](1n),
+        /Can only resubmit after rejection/
+      );
+    });
+  });
 });

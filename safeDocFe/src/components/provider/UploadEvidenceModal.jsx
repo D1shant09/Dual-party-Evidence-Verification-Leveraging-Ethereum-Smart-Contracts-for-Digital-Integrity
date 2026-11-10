@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from "react";
-import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { useAccount, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import DocumentVerificationABI from "../../ABI/DocumentVerificationABI.json";
 import { CONTRACT_ADDRESS } from "../../constants/constants";
 import { uploadEvidence, calculateSHA256 } from "../../services/api";
@@ -33,6 +33,7 @@ const ALLOWED_LABEL = "PDF, DOCX, TXT, PNG, JPG, WEBP, MP3, WAV, OGG, MP4, MOV, 
  *   onSuccess () => void         — called after on-chain updateDocument confirms
  */
 export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) {
+  const { address } = useAccount();
   const [file, setFile] = useState(null);
   const [sha256, setSha256] = useState("");
   const [uploadState, setUploadState] = useState("idle"); // idle | hashing | uploading | signing | done | error
@@ -91,7 +92,7 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
     if (!cid) {
       setUploadState("uploading");
       try {
-        const result = await uploadEvidence(file);
+        const result = await uploadEvidence(file, String(documentId), address);
         cid = result.ipfsHash;
         setIpfsCid(cid);
       } catch (err) {
@@ -101,14 +102,14 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
       }
     }
 
-    // Step 2: Call updateDocument on-chain
+    // Step 2: Call updateDocument on-chain with IPFS CID and SHA-256 fingerprint
     setUploadState("signing");
     try {
       writeContract({
         abi: DocumentVerificationABI,
         address: CONTRACT_ADDRESS,
         functionName: "updateDocument",
-        args: [BigInt(documentId), cid],
+        args: [BigInt(documentId), cid, sha256],
       });
     } catch (err) {
       setErrorMsg("Contract write rejected: " + (err.message || err));

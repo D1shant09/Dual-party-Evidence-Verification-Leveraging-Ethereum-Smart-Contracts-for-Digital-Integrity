@@ -4,6 +4,7 @@ import Provider from "./components/provider/Provider";
 import Reciepient from "./components/reciepient/Reciepient";
 import ViewerPortal from "./components/viewer/ViewerPortal";
 import AdminConsole from "./components/admin/AdminConsole";
+import AuditPortal from "./components/audit/AuditPortal";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="reciepient" element={<Reciepient />} />
           <Route path="viewer" element={<ViewerPortal />} />
           <Route path="admin" element={<AdminConsole />} />
+          <Route path="audit" element={<AuditPortal />} />
           <Route path="*" element={<div className="p-6 text-center text-gray-500">Page not found</div>} />
         </Route>
       </Routes>

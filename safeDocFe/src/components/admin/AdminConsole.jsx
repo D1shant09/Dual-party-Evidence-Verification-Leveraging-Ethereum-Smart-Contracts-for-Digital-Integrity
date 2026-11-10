@@ -4,6 +4,8 @@ import { isAddress } from "viem";
 import DocumentVerificationABI from "../../ABI/DocumentVerificationABI.json";
 import { CONTRACT_ADDRESS } from "../../constants/constants";
 import { docSafeLocal } from "../../wagmi";
+import { fetchEvidenceMetadata } from "../../services/api";
+import RejectModal from "../reciepient/RejectModal";
 
 export default function AdminConsole() {
   const { address, isConnected } = useAccount();
@@ -25,6 +27,7 @@ export default function AdminConsole() {
   const [pendingDocs, setPendingDocs] = useState([]);
   const [docsLoading, setDocsLoading] = useState(false);
   const [docsError, setDocsError] = useState("");
+  const [rejectDocId, setRejectDocId] = useState(null);
 
   const isLocalChain = chainId === docSafeLocal.id;
 
@@ -109,11 +112,19 @@ export default function AdminConsole() {
                 : false,
             ]);
 
-            // Show documents with content that are either unvalidated or in change phase
-            if (!doc.ipfsHash || (doc.isValid && !doc.isInChangePhase)) return null;
+            // Show documents with content that are either unvalidated or in change phase, excluding rejected
+            if (!doc.ipfsHash || (doc.isValid && !doc.isInChangePhase) || doc.isRejected) return null;
+
+            const metaRes = await fetchEvidenceMetadata(id);
+            const meta = metaRes?.metadata || {};
+
             return {
               id: id.toString(),
               ...doc,
+              title: meta.title,
+              category: meta.category,
+              caseNumber: meta.caseNumber,
+              description: meta.description,
               voteCount: Number(voteCount),
               hasAlreadyVoted: Boolean(hasAlreadyVoted),
             };
@@ -336,9 +347,9 @@ export default function AdminConsole() {
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
           <div className="flex justify-between items-center border-b pb-3">
             <div>
-              <h3 className="text-lg font-bold text-gray-900">Validator Review &amp; Dispute Queue</h3>
+              <h3 className="text-lg font-bold text-gray-900">Independent Body / Forensic Validator Queue</h3>
               <p className="text-xs text-gray-500">
-                Arbitrate contested evidence (Algorithm 2) &middot; Threshold: {validationLimit} approval(s)
+                Dual-party review &amp; dispute arbitration (Algorithm 2) &middot; Threshold: {validationLimit} approval(s)
               </p>
             </div>
             <button
@@ -365,8 +376,20 @@ export default function AdminConsole() {
                   className="p-4 bg-gray-50 rounded-lg border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4"
                 >
                   <div className="space-y-1 text-xs">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-gray-900">Document #{doc.id}</span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-bold text-sm text-gray-900">
+                        {doc.title || `Document #${doc.id}`}
+                      </span>
+                      {doc.caseNumber && (
+                        <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-gray-200 text-gray-800 font-semibold">
+                          {doc.caseNumber}
+                        </span>
+                      )}
+                      {doc.category && (
+                        <span className="px-2 py-0.5 rounded text-[10px] bg-purple-100 text-purple-800 font-semibold">
+                          {doc.category}
+                        </span>
+                      )}
                       {doc.isInChangePhase ? (
                         <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-orange-100 text-orange-800">
                           Contested / Change Phase
@@ -377,6 +400,9 @@ export default function AdminConsole() {
                         </span>
                       )}
                     </div>
+                    {doc.description && (
+                      <p className="text-gray-500 italic text-[11px]">{doc.description}</p>
+                    )}
                     <p className="text-gray-600 font-mono">
                       <span className="font-sans font-semibold text-gray-500">Provider:</span> {doc.provider}
                     </p>
@@ -386,6 +412,11 @@ export default function AdminConsole() {
                     <p className="text-gray-600 font-mono break-all">
                       <span className="font-sans font-semibold text-gray-500">IPFS CID:</span> {doc.ipfsHash}
                     </p>
+                    {doc.sha256Hash && (
+                      <p className="text-gray-600 font-mono break-all text-[11px]">
+                        <span className="font-sans font-semibold text-gray-500">SHA-256 Fingerprint:</span> {doc.sha256Hash}
+                      </p>
+                    )}
                     {doc.proof && (
                       <p className="text-gray-600 font-mono break-all">
                         <span className="font-sans font-semibold text-gray-500">Proof:</span> {doc.proof}
@@ -400,20 +431,43 @@ export default function AdminConsole() {
                   </div>
 
                   {isValidator && (
-                    <button
-                      type="button"
-                      onClick={() => handleValidateVote(doc.id)}
-                      disabled={isWritePending || isTxConfirming || doc.hasAlreadyVoted}
-                      className="shrink-0 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed shadow-sm transition-colors"
-                    >
-                      {doc.hasAlreadyVoted ? "Already Voted" : "Validate / Vote"}
-                    </button>
+                    <div className="flex gap-2 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleValidateVote(doc.id)}
+                        disabled={isWritePending || isTxConfirming || doc.hasAlreadyVoted}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md disabled:bg-gray-300 disabled:cursor-not-allowed shadow-sm transition-colors"
+                      >
+                        {doc.hasAlreadyVoted ? "Already Voted" : "Validate / Vote"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setRejectDocId(doc.id)}
+                        disabled={isWritePending || isTxConfirming}
+                        className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-md disabled:bg-gray-300 shadow-sm transition-colors"
+                      >
+                        Reject
+                      </button>
+                    </div>
                   )}
                 </div>
               ))}
             </div>
           )}
         </div>
+      )}
+
+      {/* Reject modal */}
+      {rejectDocId && (
+        <RejectModal
+          documentId={rejectDocId}
+          userRole="validator"
+          onClose={() => setRejectDocId(null)}
+          onSuccess={() => {
+            setRejectDocId(null);
+            fetchPendingDocs();
+          }}
+        />
       )}
     </div>
   );

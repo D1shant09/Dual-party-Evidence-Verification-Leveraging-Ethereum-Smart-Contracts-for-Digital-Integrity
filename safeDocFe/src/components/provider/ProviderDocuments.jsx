@@ -1,10 +1,11 @@
 import { useState, useCallback, useEffect } from "react";
 import { useAccount, useChainId, usePublicClient, useWriteContract, useWaitForTransactionReceipt } from "wagmi";
+import { decodeEventLog } from "viem";
 import DocumentVerificationABI from "../../ABI/DocumentVerificationABI.json";
 import { CONTRACT_ADDRESS } from "../../constants/constants";
 import { docSafeLocal } from "../../wagmi";
 import UploadEvidenceModal from "./UploadEvidenceModal";
-import { uploadEvidence } from "../../services/api";
+import { uploadEvidence, fetchEvidenceMetadata, initiateEvidenceMetadata } from "../../services/api";
 
 export default function ProviderDocuments() {
   const { address, isConnected } = useAccount();
@@ -14,6 +15,24 @@ export default function ProviderDocuments() {
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
   const [uploadModalDoc, setUploadModalDoc] = useState(null);
+
+  // Resubmission state
+  const [resubmittingDocId, setResubmittingDocId] = useState(null);
+  const [resubmitSuccessMsg, setResubmitSuccessMsg] = useState("");
+
+  const {
+    data: resubmitTxHash,
+    writeContract: writeResubmitContract,
+    isPending: isResubmitPending,
+    error: writeResubmitError,
+    reset: resetResubmitWrite,
+  } = useWriteContract();
+
+  const {
+    isLoading: isResubmitConfirming,
+    isSuccess: isResubmitSuccess,
+    data: resubmitReceipt,
+  } = useWaitForTransactionReceipt({ hash: resubmitTxHash });
 
   // Force update modal state
   const [forceUpdateDoc, setForceUpdateDoc] = useState(null);
@@ -70,6 +89,11 @@ export default function ProviderDocuments() {
               functionName: "approvals",
               args: [data.recipient, id],
             });
+
+            // Fetch rich case metadata from backend if available
+            const metaRes = await fetchEvidenceMetadata(id.toString());
+            const meta = metaRes?.metadata || {};
+
             return {
               id: id.toString(),
               ipfsHash: data.ipfsHash,
@@ -78,7 +102,14 @@ export default function ProviderDocuments() {
               isValid: data.isValid,
               isInChangePhase: data.isInChangePhase,
               proof: data.proof,
+              sha256Hash: data.sha256Hash,
+              isRejected: data.isRejected,
+              rejectionReason: data.rejectionReason,
               isApproved,
+              title: meta.title,
+              category: meta.category,
+              caseNumber: meta.caseNumber,
+              description: meta.description,
             };
           } catch (err) {
             console.error(`Failed to fetch provider doc ${id}:`, err);
@@ -143,6 +174,59 @@ export default function ProviderDocuments() {
     }
   }, [writeForceError, forceStatus, isForcePending]);
 
+  const handleResubmit = (doc) => {
+    setResubmitSuccessMsg("");
+    setResubmittingDocId(doc.id);
+    resetResubmitWrite();
+    writeResubmitContract({
+      abi: DocumentVerificationABI,
+      address: CONTRACT_ADDRESS,
+      functionName: "createResubmission",
+      args: [BigInt(doc.id)],
+    });
+  };
+
+  useEffect(() => {
+    if (isResubmitSuccess && resubmitReceipt) {
+      let newDocId = null;
+      for (const log of resubmitReceipt.logs) {
+        try {
+          const decoded = decodeEventLog({
+            abi: DocumentVerificationABI,
+            data: log.data,
+            topics: log.topics,
+          });
+          if (decoded.eventName === "DocumentResubmitted") {
+            newDocId = decoded.args.newDocumentId.toString();
+            break;
+          }
+        } catch {
+          // ignore
+        }
+      }
+
+      const prevDoc = documents.find((d) => d.id === resubmittingDocId);
+      if (newDocId && prevDoc) {
+        initiateEvidenceMetadata({
+          documentId: newDocId,
+          title: prevDoc.title ? `${prevDoc.title} (Resubmission)` : `Evidence #${newDocId}`,
+          category: prevDoc.category || "Other",
+          caseNumber: prevDoc.caseNumber || "",
+          description: `Linked resubmission following rejection of container #${prevDoc.id}. Original rejection: "${prevDoc.rejectionReason || "Defective"}"`,
+          providerAddress: address,
+          recipientAddress: prevDoc.recipient,
+        }).catch((e) => console.warn("Failed to seed resubmission metadata:", e));
+
+        setResubmitSuccessMsg(`Linked container #${newDocId} created successfully! Awaiting recipient consent before upload.`);
+      } else {
+        setResubmitSuccessMsg("Resubmission transaction confirmed! Records refreshed.");
+      }
+
+      setResubmittingDocId(null);
+      fetchDocuments();
+    }
+  }, [isResubmitSuccess, resubmitReceipt, resubmittingDocId, documents, address, fetchDocuments]);
+
   if (!isConnected) {
     return (
       <div className="p-6 text-center text-gray-600 bg-white rounded-lg shadow-sm max-w-xl mx-auto mt-6">
@@ -160,11 +244,12 @@ export default function ProviderDocuments() {
   }
 
   // Filter documents into states
-  const awaitingApproval = documents.filter((d) => !d.isApproved && !d.ipfsHash && !d.isValid);
-  const readyToUpload = documents.filter((d) => d.isApproved && !d.ipfsHash && !d.isValid);
-  const pendingValidation = documents.filter((d) => d.ipfsHash && !d.isValid && !d.isInChangePhase);
-  const inChangePhase = documents.filter((d) => d.isInChangePhase);
-  const validated = documents.filter((d) => d.isValid && !d.isInChangePhase);
+  const awaitingApproval = documents.filter((d) => !d.isApproved && !d.ipfsHash && !d.isValid && !d.isRejected);
+  const readyToUpload = documents.filter((d) => d.isApproved && !d.ipfsHash && !d.isValid && !d.isRejected);
+  const pendingValidation = documents.filter((d) => d.ipfsHash && !d.isValid && !d.isInChangePhase && !d.isRejected);
+  const inChangePhase = documents.filter((d) => d.isInChangePhase && !d.isRejected);
+  const validated = documents.filter((d) => d.isValid && !d.isInChangePhase && !d.isRejected);
+  const rejected = documents.filter((d) => d.isRejected);
 
   const statusSections = [
     {
@@ -207,6 +292,14 @@ export default function ProviderDocuments() {
       badgeColor: "bg-emerald-100 text-emerald-800",
       action: "forceUpdate",
     },
+    {
+      title: "6. Rejected Submissions (Resubmission Required)",
+      docs: rejected,
+      emptyMsg: "No rejected evidence submissions.",
+      badge: "Rejected / Defective",
+      badgeColor: "bg-red-100 text-red-800",
+      action: "resubmit",
+    },
   ];
 
   return (
@@ -229,6 +322,27 @@ export default function ProviderDocuments() {
       {fetchError && (
         <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">
           {fetchError}
+        </div>
+      )}
+
+      {(isResubmitPending || isResubmitConfirming) && (
+        <div className="p-3 bg-blue-50 text-blue-800 rounded-lg border border-blue-200 text-xs flex items-center gap-2">
+          <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full" />
+          <span>
+            {isResubmitPending ? "Please sign linked resubmission in MetaMask..." : "Confirming linked container on-chain..."}
+          </span>
+        </div>
+      )}
+
+      {resubmitSuccessMsg && (
+        <div className="p-3 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-200 text-xs">
+          &#10003; {resubmitSuccessMsg}
+        </div>
+      )}
+
+      {writeResubmitError && (
+        <div className="p-3 bg-red-50 text-red-800 rounded-lg border border-red-200 text-xs">
+          &#9888; Resubmission error: {writeResubmitError.shortMessage || writeResubmitError.message}
         </div>
       )}
 
@@ -261,12 +375,27 @@ export default function ProviderDocuments() {
                     className="p-4 bg-gray-50 rounded-lg border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4"
                   >
                     <div className="space-y-1 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-sm text-gray-900">Document #{doc.id}</span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-bold text-sm text-gray-900">
+                          {doc.title || `Document #${doc.id}`}
+                        </span>
+                        {doc.caseNumber && (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-gray-200 text-gray-800 font-semibold">
+                            {doc.caseNumber}
+                          </span>
+                        )}
+                        {doc.category && (
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-purple-100 text-purple-800 font-semibold">
+                            {doc.category}
+                          </span>
+                        )}
                         <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${badgeColor}`}>
                           {badge}
                         </span>
                       </div>
+                      {doc.description && (
+                        <p className="text-gray-500 italic text-[11px]">{doc.description}</p>
+                      )}
                       <p className="text-gray-600 font-mono">
                         <span className="font-sans font-semibold text-gray-500">Recipient:</span> {doc.recipient}
                       </p>
@@ -275,10 +404,21 @@ export default function ProviderDocuments() {
                           <span className="font-sans font-semibold text-gray-500">IPFS CID:</span> {doc.ipfsHash}
                         </p>
                       )}
+                      {doc.sha256Hash && (
+                        <p className="text-gray-600 font-mono break-all text-[11px]">
+                          <span className="font-sans font-semibold text-gray-500">SHA-256 Fingerprint:</span> {doc.sha256Hash}
+                        </p>
+                      )}
                       {doc.proof && (
                         <p className="text-gray-600 font-mono break-all">
                           <span className="font-sans font-semibold text-gray-500">Proof:</span> {doc.proof}
                         </p>
+                      )}
+                      {doc.rejectionReason && (
+                        <div className="p-2.5 bg-red-50 text-red-800 rounded-md border border-red-200 text-xs mt-1">
+                          <span className="font-semibold block mb-0.5">Rejection Reason:</span>
+                          <span className="italic">{doc.rejectionReason}</span>
+                        </div>
                       )}
                     </div>
 
@@ -306,6 +446,17 @@ export default function ProviderDocuments() {
                           className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors"
                         >
                           Force Update
+                        </button>
+                      )}
+
+                      {action === "resubmit" && (
+                        <button
+                          type="button"
+                          disabled={isResubmitPending || isResubmitConfirming}
+                          onClick={() => handleResubmit(doc)}
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                        >
+                          {isResubmitPending || isResubmitConfirming ? "Creating..." : "Create Linked Resubmission"}
                         </button>
                       )}
                     </div>

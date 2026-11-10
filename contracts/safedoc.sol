@@ -9,6 +9,9 @@ contract DocumentVerification {
         bool isValid;
         bool isInChangePhase;
         string proof;
+        string sha256Hash;
+        bool isRejected;
+        string rejectionReason;
     }
 
     address public owner;
@@ -30,6 +33,8 @@ contract DocumentVerification {
     event DocumentUpdated(uint256 indexed documentId, string newIpfsHash);
     event DocumentChallenge(uint256 indexed documentId, string newIpfsHash, string proof, string witness);
     event DocumentValidated(uint256 indexed documentId, address indexed validator);
+    event DocumentRejected(uint256 indexed documentId, address indexed reviewer, string reason);
+    event DocumentResubmitted(uint256 indexed newDocumentId, uint256 indexed previousDocumentId);
     event ViewerApproved(uint256 indexed documentId, address indexed viewer);
     event ViewerRevoked(uint256 indexed documentId, address indexed viewer);
 
@@ -66,7 +71,10 @@ contract DocumentVerification {
             recipient: recipient,
             isValid: false,
             isInChangePhase: false,
-            proof: ""
+            proof: "",
+            sha256Hash: "",
+            isRejected: false,
+            rejectionReason: ""
         });
         viewers[recipient][documentCount] = true;
         viewers[msg.sender][documentCount] = true;
@@ -78,25 +86,61 @@ contract DocumentVerification {
     }
 
     function approveDocumentChange(uint256 documentId) public onlyRecipient(documentId) {
+        require(!documents[documentId].isRejected, "Cannot approve change on rejected document");
         approvals[msg.sender][documentId] = true;
     }
 
     function updateDocument(uint256 documentId, string memory newIpfsHash) public onlyProvider(documentId) {
+        updateDocument(documentId, newIpfsHash, "");
+    }
+
+    function updateDocument(uint256 documentId, string memory newIpfsHash, string memory sha256Hash) public onlyProvider(documentId) {
         require(approvals[documents[documentId].recipient][documentId], "Recipient must approve the change");
+        require(!documents[documentId].isRejected, "Document is rejected");
         documents[documentId].ipfsHash = newIpfsHash;
+        documents[documentId].sha256Hash = sha256Hash;
         documents[documentId].isValid = false;
         approvals[documents[documentId].recipient][documentId] = false;
         emit DocumentUpdated(documentId, newIpfsHash);
     }
 
     function validateDocument(uint256 documentId) public onlyRecipient(documentId) {
+        require(!documents[documentId].isRejected, "Cannot validate rejected document");
         documents[documentId].isValid = true;
         documents[documentId].isInChangePhase = false;
         validDocuments[documentId] = documents[documentId]; // Move to validDocuments
         emit DocumentValidated(documentId, msg.sender);
     }
 
+    function rejectDocument(uint256 documentId, string memory reason) public {
+        require(
+            documents[documentId].recipient == msg.sender || validators[msg.sender] || msg.sender == owner,
+            "Only recipient, validator, or owner can reject"
+        );
+        require(!documents[documentId].isValid, "Cannot reject validated document");
+        require(!documents[documentId].isRejected, "Document already rejected");
+        documents[documentId].isRejected = true;
+        documents[documentId].rejectionReason = reason;
+        documents[documentId].isInChangePhase = false;
+        approvals[documents[documentId].recipient][documentId] = false;
+        emit DocumentRejected(documentId, msg.sender, reason);
+    }
+
+    function createResubmission(uint256 previousDocumentId, address recipient) public returns (uint256) {
+        require(documents[previousDocumentId].provider == msg.sender, "Only previous provider can resubmit");
+        require(documents[previousDocumentId].isRejected, "Can only resubmit after rejection");
+        address targetRecipient = recipient != address(0) ? recipient : documents[previousDocumentId].recipient;
+        uint256 newId = addEmptyDocument(targetRecipient);
+        emit DocumentResubmitted(newId, previousDocumentId);
+        return newId;
+    }
+
+    function createResubmission(uint256 previousDocumentId) public returns (uint256) {
+        return createResubmission(previousDocumentId, documents[previousDocumentId].recipient);
+    }
+
     function forceUpdateDocument(uint256 documentId, string memory newIpfsHash, string memory proof) public onlyProvider(documentId) {
+        require(!documents[documentId].isRejected, "Document is rejected");
         if (documents[documentId].isValid) {
             validDocuments[documentId] = documents[documentId]; // Save current valid document
         }
@@ -110,6 +154,7 @@ contract DocumentVerification {
     }
 
     function challengeDocument(uint256 documentId, string memory newIpfsHash, string memory witness) public onlyRecipient(documentId) {
+        require(!documents[documentId].isRejected, "Document is rejected");
         require(documents[documentId].isInChangePhase, "Document must be in change phase to challenge");
         documents[documentId].ipfsHash = newIpfsHash;
         documents[documentId].isInChangePhase = false;
@@ -117,6 +162,7 @@ contract DocumentVerification {
     }
 
     function validateFromValidators(uint256 documentId) public onlyValidator {
+        require(!documents[documentId].isRejected, "Cannot validate rejected document");
         uint256 currentRound = disputeRounds[documentId];
         require(!hasValidatedRound[documentId][currentRound][msg.sender], "Already validated by this validator");
         hasValidatedRound[documentId][currentRound][msg.sender] = true;

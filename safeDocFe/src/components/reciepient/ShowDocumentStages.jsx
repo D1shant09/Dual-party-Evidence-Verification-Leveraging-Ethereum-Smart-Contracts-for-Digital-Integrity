@@ -6,6 +6,8 @@ import { CONTRACT_ADDRESS } from "./../../constants/constants";
 import { docSafeLocal } from "../../wagmi";
 import EvidencePreview from "./EvidencePreview";
 import ChallengeModal from "./ChallengeModal";
+import RejectModal from "./RejectModal";
+import { fetchEvidenceMetadata, recordReviewerDecision } from "../../services/api";
 
 const RecipientDocuments = () => {
   const { address, isConnected } = useAccount();
@@ -15,9 +17,10 @@ const RecipientDocuments = () => {
   const [loading, setLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
-  // Preview & challenge modal states
+  // Preview & modal states
   const [previewDocId, setPreviewDocId] = useState(null);
   const [challengeDoc, setChallengeDoc] = useState(null);
+  const [rejectDocId, setRejectDocId] = useState(null);
 
   // Per-document viewer address inputs
   const [viewerInputs, setViewerInputs] = useState({});
@@ -62,6 +65,11 @@ const RecipientDocuments = () => {
               args: [id],
               account: address,
             });
+
+            // Fetch rich case metadata from backend if available
+            const metaRes = await fetchEvidenceMetadata(id.toString());
+            const meta = metaRes?.metadata || {};
+
             return {
               id: id.toString(),
               ipfsHash: data.ipfsHash,
@@ -70,6 +78,13 @@ const RecipientDocuments = () => {
               isValid: data.isValid,
               isInChangePhase: data.isInChangePhase,
               proof: data.proof,
+              sha256Hash: data.sha256Hash,
+              isRejected: data.isRejected,
+              rejectionReason: data.rejectionReason,
+              title: meta.title,
+              category: meta.category,
+              caseNumber: meta.caseNumber,
+              description: meta.description,
             };
           } catch (err) {
             console.error(`Failed to fetch doc ${id}:`, err);
@@ -121,12 +136,25 @@ const RecipientDocuments = () => {
 
   const handleValidate = (documentId) => {
     reset();
-    writeContract({
-      abi: DocumentVerificationABI,
-      address: CONTRACT_ADDRESS,
-      functionName: "validateDocument",
-      args: [BigInt(documentId)],
-    });
+    writeContract(
+      {
+        abi: DocumentVerificationABI,
+        address: CONTRACT_ADDRESS,
+        functionName: "validateDocument",
+        args: [BigInt(documentId)],
+      },
+      {
+        onSuccess: (hash) => {
+          recordReviewerDecision(documentId, {
+            reviewerAddress: address || "Recipient",
+            role: "recipient",
+            decision: "approved",
+            reason: "Recipient confirmed evidence authenticity & integrity",
+            txHash: hash,
+          }).catch((e) => console.error("Failed to record decision:", e));
+        },
+      }
+    );
   };
 
   const handleApproveViewer = (documentId) => {
@@ -181,10 +209,11 @@ const RecipientDocuments = () => {
     );
   }
 
-  const approveForEmpty = documents.filter((doc) => !doc.ipfsHash && !doc.isValid);
-  const needVerify = documents.filter((doc) => doc.ipfsHash && !doc.isValid && !doc.isInChangePhase);
-  const challengeForceUpdate = documents.filter((doc) => doc.isInChangePhase);
-  const validDocuments = documents.filter((doc) => doc.isValid && !doc.isInChangePhase);
+  const approveForEmpty = documents.filter((doc) => !doc.ipfsHash && !doc.isValid && !doc.isRejected);
+  const needVerify = documents.filter((doc) => doc.ipfsHash && !doc.isValid && !doc.isInChangePhase && !doc.isRejected);
+  const challengeForceUpdate = documents.filter((doc) => doc.isInChangePhase && !doc.isRejected);
+  const validDocuments = documents.filter((doc) => doc.isValid && !doc.isInChangePhase && !doc.isRejected);
+  const rejectedDocuments = documents.filter((doc) => doc.isRejected);
 
   return (
     <div className="p-6 space-y-8 mt-4 max-w-4xl mx-auto text-left">
@@ -249,6 +278,12 @@ const RecipientDocuments = () => {
           message: "No validated evidence records yet.",
           type: "validated",
         },
+        {
+          title: "5. Rejected Evidence / Defective Containers",
+          docs: rejectedDocuments,
+          message: "No rejected evidence submissions.",
+          type: "rejected",
+        },
       ].map(({ title, docs, message, type }) => (
         <div key={title} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm space-y-4">
           <div className="flex justify-between items-center">
@@ -269,8 +304,20 @@ const RecipientDocuments = () => {
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
                     <div className="space-y-1 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm font-bold text-gray-900">Document #{doc.id}</span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-sm font-bold text-gray-900">
+                          {doc.title || `Document #${doc.id}`}
+                        </span>
+                        {doc.caseNumber && (
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-gray-200 text-gray-800 font-semibold">
+                            {doc.caseNumber}
+                          </span>
+                        )}
+                        {doc.category && (
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-purple-100 text-purple-800 font-semibold">
+                            {doc.category}
+                          </span>
+                        )}
                         {doc.isValid && (
                           <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 font-semibold rounded text-[10px]">
                             Validated
@@ -281,7 +328,15 @@ const RecipientDocuments = () => {
                             In Change Phase
                           </span>
                         )}
+                        {doc.isRejected && (
+                          <span className="px-2 py-0.5 bg-red-100 text-red-800 font-semibold rounded text-[10px]">
+                            Rejected
+                          </span>
+                        )}
                       </div>
+                      {doc.description && (
+                        <p className="text-gray-500 italic text-[11px]">{doc.description}</p>
+                      )}
                       <p className="text-gray-600 font-mono">
                         <span className="font-sans font-semibold text-gray-500">Provider:</span> {doc.provider}
                       </p>
@@ -290,10 +345,21 @@ const RecipientDocuments = () => {
                           <span className="font-sans font-semibold text-gray-500">IPFS Hash:</span> {doc.ipfsHash}
                         </p>
                       )}
+                      {doc.sha256Hash && (
+                        <p className="text-gray-600 font-mono break-all">
+                          <span className="font-sans font-semibold text-gray-500">SHA-256 Fingerprint:</span> {doc.sha256Hash}
+                        </p>
+                      )}
                       {doc.proof && (
                         <p className="text-gray-600 font-mono break-all">
                           <span className="font-sans font-semibold text-gray-500">Proof:</span> {doc.proof}
                         </p>
+                      )}
+                      {doc.rejectionReason && (
+                        <div className="p-2.5 bg-red-50 text-red-800 rounded-md border border-red-200 text-xs mt-1">
+                          <span className="font-semibold block mb-0.5">Rejection Justification:</span>
+                          <span className="italic">{doc.rejectionReason}</span>
+                        </div>
                       )}
                     </div>
 
@@ -321,14 +387,24 @@ const RecipientDocuments = () => {
                       )}
 
                       {type === "validate" && (
-                        <button
-                          type="button"
-                          disabled={isWritePending || isTxConfirming}
-                          onClick={() => handleValidate(doc.id)}
-                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded shadow-sm disabled:opacity-50"
-                        >
-                          Validate Evidence
-                        </button>
+                        <>
+                          <button
+                            type="button"
+                            disabled={isWritePending || isTxConfirming}
+                            onClick={() => handleValidate(doc.id)}
+                            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded shadow-sm disabled:opacity-50"
+                          >
+                            Validate Evidence
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isWritePending || isTxConfirming}
+                            onClick={() => setRejectDocId(doc.id)}
+                            className="px-3 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm disabled:opacity-50"
+                          >
+                            Reject Evidence
+                          </button>
+                        </>
                       )}
 
                       {type === "challenge" && (
@@ -345,9 +421,17 @@ const RecipientDocuments = () => {
                             type="button"
                             disabled={isWritePending || isTxConfirming}
                             onClick={() => setChallengeDoc(doc)}
-                            className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm disabled:opacity-50"
+                            className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded shadow-sm disabled:opacity-50"
                           >
                             Contest / Challenge
+                          </button>
+                          <button
+                            type="button"
+                            disabled={isWritePending || isTxConfirming}
+                            onClick={() => setRejectDocId(doc.id)}
+                            className="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded shadow-sm disabled:opacity-50"
+                          >
+                            Reject
                           </button>
                         </>
                       )}
@@ -417,6 +501,19 @@ const RecipientDocuments = () => {
           onClose={() => setChallengeDoc(null)}
           onSuccess={() => {
             setChallengeDoc(null);
+            fetchDocuments();
+          }}
+        />
+      )}
+
+      {/* Reject modal */}
+      {rejectDocId && (
+        <RejectModal
+          documentId={rejectDocId}
+          userRole="recipient"
+          onClose={() => setRejectDocId(null)}
+          onSuccess={() => {
+            setRejectDocId(null);
             fetchDocuments();
           }}
         />

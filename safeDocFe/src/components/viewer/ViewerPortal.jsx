@@ -4,6 +4,7 @@ import DocumentVerificationABI from "../../ABI/DocumentVerificationABI.json";
 import { CONTRACT_ADDRESS } from "../../constants/constants";
 import { docSafeLocal } from "../../wagmi";
 import EvidencePreview from "../reciepient/EvidencePreview";
+import { fetchEvidenceMetadata } from "../../services/api";
 
 export default function ViewerPortal() {
   const { address, isConnected } = useAccount();
@@ -15,6 +16,7 @@ export default function ViewerPortal() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [docInfo, setDocInfo] = useState(null);
+  const [caseMeta, setCaseMeta] = useState(null);
   const [associatedDocs, setAssociatedDocs] = useState([]);
 
   const isLocalChain = chainId === docSafeLocal.id;
@@ -92,6 +94,14 @@ export default function ViewerPortal() {
         args: [BigInt(id)],
         account: address,
       });
+
+      // Also read rich case metadata from backend if available
+      const metaRes = await fetchEvidenceMetadata(id);
+      if (metaRes?.metadata) {
+        setCaseMeta(metaRes.metadata);
+      } else {
+        setCaseMeta(null);
+      }
 
       setCid(ipfsHash);
       setDocInfo(doc);
@@ -194,9 +204,25 @@ export default function ViewerPortal() {
       {docInfo && (
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 space-y-4">
           <div className="border-b pb-3">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-gray-900">Document #{docIdInput}</h3>
-              {docInfo.isValid ? (
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-lg font-bold text-gray-900">
+                {caseMeta?.title || `Document #${docIdInput}`}
+              </h3>
+              {caseMeta?.caseNumber && (
+                <span className="px-2.5 py-0.5 rounded text-xs font-mono bg-gray-100 text-gray-800 font-semibold border border-gray-200">
+                  {caseMeta.caseNumber}
+                </span>
+              )}
+              {caseMeta?.category && (
+                <span className="px-2.5 py-0.5 rounded text-xs bg-purple-100 text-purple-800 font-semibold">
+                  {caseMeta.category}
+                </span>
+              )}
+              {docInfo.isRejected ? (
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-800">
+                  &#10007; Rejected Submission
+                </span>
+              ) : docInfo.isValid ? (
                 <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
                   &#10003; Validated Evidence
                 </span>
@@ -206,6 +232,15 @@ export default function ViewerPortal() {
                 </span>
               )}
             </div>
+            {caseMeta?.description && (
+              <p className="text-xs text-gray-600 mt-1 italic">{caseMeta.description}</p>
+            )}
+            {docInfo.rejectionReason && (
+              <div className="mt-2 p-2.5 bg-red-50 text-red-800 rounded border border-red-200 text-xs">
+                <span className="font-semibold block mb-0.5">Rejection Justification:</span>
+                <span className="italic">{docInfo.rejectionReason}</span>
+              </div>
+            )}
             <div className="mt-2 text-xs font-mono text-gray-600 space-y-1">
               <p>
                 <span className="font-sans font-semibold text-gray-500">Provider:</span> {docInfo.provider}
@@ -213,6 +248,12 @@ export default function ViewerPortal() {
               <p>
                 <span className="font-sans font-semibold text-gray-500">Recipient:</span> {docInfo.recipient}
               </p>
+              {docInfo.sha256Hash && (
+                <p className="break-all text-[11px]">
+                  <span className="font-sans font-semibold text-gray-500">SHA-256 Fingerprint:</span>{" "}
+                  {docInfo.sha256Hash}
+                </p>
+              )}
               <p className="break-all">
                 <span className="font-sans font-semibold text-gray-500">IPFS CID:</span>{" "}
                 {cid ? cid : <span className="text-amber-700 font-sans italic">Not yet uploaded</span>}
