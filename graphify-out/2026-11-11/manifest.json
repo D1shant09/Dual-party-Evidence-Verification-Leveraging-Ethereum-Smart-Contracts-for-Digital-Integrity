@@ -1,0 +1,332 @@
+{
+  ".gemini/settings.json": {
+    "mtime": 1794210227.7023103,
+    "seen": 1794211214.5073433,
+    "ast_hash": "80ea98bccb3fe70c423ddee2f0dac318",
+    "semantic_hash": "80ea98bccb3fe70c423ddee2f0dac318"
+  },
+  "contracts/safedoc.sol": {
+    "mtime": 1793286905.318696,
+    "seen": 1794211214.5073576,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "hardhat.config.cjs": {
+    "mtime": 1793261228.0,
+    "seen": 1794211214.5073645,
+    "ast_hash": "4e5c35f23d49f9d7f376748c96f02849",
+    "semantic_hash": "4e5c35f23d49f9d7f376748c96f02849"
+  },
+  "package.json": {
+    "mtime": 1793286987.3870146,
+    "seen": 1794211214.507368,
+    "ast_hash": "f380c7e9ce44143399deb65569578809",
+    "semantic_hash": "f380c7e9ce44143399deb65569578809"
+  },
+  "pinata-starter/index.js": {
+    "mtime": 1793261232.0,
+    "seen": 1794211214.5073707,
+    "ast_hash": "cad216205507a0631e852c11e337eaf0",
+    "semantic_hash": "cad216205507a0631e852c11e337eaf0"
+  },
+  "pinata-starter/package.json": {
+    "mtime": 1793261290.0,
+    "seen": 1794211214.5073733,
+    "ast_hash": "db2288e1f46a324927bb7c96b5d5612e",
+    "semantic_hash": "db2288e1f46a324927bb7c96b5d5612e"
+  },
+  "safeDocBe/index.js": {
+    "mtime": 1794304935.6215827,
+    "seen": 1794305473.8689556,
+    "ast_hash": "3ea5ab067c6776253dcbf8fb1e43e6a8",
+    "semantic_hash": ""
+  },
+  "safeDocBe/package.json": {
+    "mtime": 1793287288.6039414,
+    "seen": 1794211214.507378,
+    "ast_hash": "e657a1429b84e29abcb530a285e16cdd",
+    "semantic_hash": "e657a1429b84e29abcb530a285e16cdd"
+  },
+  "safeDocFe/eslint.config.js": {
+    "mtime": 1794249872.8218455,
+    "seen": 1794301573.1281767,
+    "ast_hash": "fdc1a04a6e0af73ee02ac5359c645d61",
+    "semantic_hash": ""
+  },
+  "safeDocFe/package.json": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5073826,
+    "ast_hash": "718960b1b86fd2c497d664da035890b6",
+    "semantic_hash": "718960b1b86fd2c497d664da035890b6"
+  },
+  "safeDocFe/src/ABI/DocumentVerificationABI.json": {
+    "mtime": 1794307347.5419312,
+    "seen": 1794308079.1736028,
+    "ast_hash": "ac148aeb2f36a531b1bacb84bddfbae3",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/App.jsx": {
+    "mtime": 1794306453.0371702,
+    "seen": 1794306669.9351726,
+    "ast_hash": "2a44940cc3958cdbf368ad797a2c2e08",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/Home.jsx": {
+    "mtime": 1793287070.0203316,
+    "seen": 1794211214.5073888,
+    "ast_hash": "d5d781c93f730a872708f9432f111124",
+    "semantic_hash": "d5d781c93f730a872708f9432f111124"
+  },
+  "safeDocFe/src/components/Account.jsx": {
+    "mtime": 1793287010.3401031,
+    "seen": 1794211214.5073912,
+    "ast_hash": "609e70f814739e100538f54a701325ee",
+    "semantic_hash": "609e70f814739e100538f54a701325ee"
+  },
+  "safeDocFe/src/components/Connect.tsx": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5073936,
+    "ast_hash": "30e26430f98316f08cf105f11cfd65e1",
+    "semantic_hash": "30e26430f98316f08cf105f11cfd65e1"
+  },
+  "safeDocFe/src/components/ConnectWallet.jsx": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5073955,
+    "ast_hash": "16439a1e3e26c11999299cf34d1038a7",
+    "semantic_hash": "16439a1e3e26c11999299cf34d1038a7"
+  },
+  "safeDocFe/src/components/Home/Home.jsx": {
+    "mtime": 1793287087.3003974,
+    "seen": 1794211214.507398,
+    "ast_hash": "6c0e1b42360650b6b13dfdadddf7b673",
+    "semantic_hash": "6c0e1b42360650b6b13dfdadddf7b673"
+  },
+  "safeDocFe/src/components/Home/navbar/Navbar.jsx": {
+    "mtime": 1794306485.9532814,
+    "seen": 1794306669.9352663,
+    "ast_hash": "9dea0ebebd117a17510d7aeb4e48a6ad",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/provider/AddDoc.tsx": {
+    "mtime": 1794305080.486915,
+    "seen": 1794305473.869158,
+    "ast_hash": "cd7665e2661e06ac8d3e1cb1fd8f78c8",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/provider/Provider.tsx": {
+    "mtime": 1794301415.2803395,
+    "seen": 1794301573.1283104,
+    "ast_hash": "530c879835dee3524011029ea4f3c315",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/reciepient/Reciepient.jsx": {
+    "mtime": 1793287124.6765242,
+    "seen": 1794211214.5074074,
+    "ast_hash": "3660683cca71c1b5b1f189ceff0218b6",
+    "semantic_hash": "3660683cca71c1b5b1f189ceff0218b6"
+  },
+  "safeDocFe/src/components/reciepient/ShowDocumentStages.jsx": {
+    "mtime": 1794307654.4498444,
+    "seen": 1794308079.1738796,
+    "ast_hash": "6549677b4ad60b599482fbf6fd30fbf9",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/constants/constants.jsx": {
+    "mtime": 1794307347.5419312,
+    "seen": 1794308079.173882,
+    "ast_hash": "4a8b5f99111dcf22a3012361528cb377",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/main.jsx": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.507414,
+    "ast_hash": "e13723e2574429d9a6d849727e3ff695",
+    "semantic_hash": "e13723e2574429d9a6d849727e3ff695"
+  },
+  "safeDocFe/src/wagmi.tsx": {
+    "mtime": 1793286996.7320507,
+    "seen": 1794211214.5074162,
+    "ast_hash": "7025e33f6d279b39357360f967d9fdad",
+    "semantic_hash": "7025e33f6d279b39357360f967d9fdad"
+  },
+  "safeDocFe/vite.config.js": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5074186,
+    "ast_hash": "fefb217f998ceef358684909a5fe89c6",
+    "semantic_hash": "fefb217f998ceef358684909a5fe89c6"
+  },
+  "scripts/deploy-local.cjs": {
+    "mtime": 1793261228.0,
+    "seen": 1794211214.5074213,
+    "ast_hash": "fa15544f097bdc1c0c7c6e8584b8bb66",
+    "semantic_hash": "fa15544f097bdc1c0c7c6e8584b8bb66"
+  },
+  "test/safedoc.test.cjs": {
+    "mtime": 1794307323.4138622,
+    "seen": 1794308079.1739717,
+    "ast_hash": "ca70d68aeff209fb5783aa03cf008fad",
+    "semantic_hash": ""
+  },
+  "GEMINI.md": {
+    "mtime": 1794210227.7019048,
+    "seen": 1794211214.5074253,
+    "ast_hash": "67d88e9d0760c3ba54c75dfd9551c1c5",
+    "semantic_hash": "67d88e9d0760c3ba54c75dfd9551c1c5"
+  },
+  "LOCAL_BLOCKCHAIN.md": {
+    "mtime": 1793287725.1972084,
+    "seen": 1794211214.5074277,
+    "ast_hash": "cc1460a574418351189a0e15a9e568ef",
+    "semantic_hash": "cc1460a574418351189a0e15a9e568ef"
+  },
+  "README.md": {
+    "mtime": 1793301086.5316162,
+    "seen": 1794211214.5074298,
+    "ast_hash": "0d6d4aa40834a3bd9ef0a7386ef897f0",
+    "semantic_hash": "0d6d4aa40834a3bd9ef0a7386ef897f0"
+  },
+  "safeDocFe/README.md": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5074325,
+    "ast_hash": "1dfcb98fb0236ca209793b23d90c2d2a",
+    "semantic_hash": "1dfcb98fb0236ca209793b23d90c2d2a"
+  },
+  "safeDocFe/index.html": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5074346,
+    "ast_hash": "b1f66b03f847d826eb9d9ffdea563c2e",
+    "semantic_hash": "b1f66b03f847d826eb9d9ffdea563c2e"
+  },
+  "safeDocFe/public/vite.svg": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5074368,
+    "ast_hash": "8e3a10e157f75ada21ab742c022d5430",
+    "semantic_hash": "8e3a10e157f75ada21ab742c022d5430"
+  },
+  "safeDocFe/src/assets/react.svg": {
+    "mtime": 1742265440.0,
+    "seen": 1794211214.5074391,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": "f0402b67b6ce880f65666bb49e841696"
+  },
+  "safeDocFe/src/components/admin/AdminConsole.jsx": {
+    "mtime": 1794307885.4315648,
+    "seen": 1794308079.1737356,
+    "ast_hash": "6929133a9988868d9c969593be477f42",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/provider/ProviderDocuments.jsx": {
+    "mtime": 1794308015.006977,
+    "seen": 1794308079.1738167,
+    "ast_hash": "c6ebfe51407666a78d2f50a2c8dc7848",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/provider/UploadEvidenceModal.jsx": {
+    "mtime": 1794307401.7470875,
+    "seen": 1794308079.1738179,
+    "ast_hash": "75653aa679a9058b356c67144e1a275f",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/reciepient/ChallengeModal.jsx": {
+    "mtime": 1794249872.8228457,
+    "seen": 1794301573.1283138,
+    "ast_hash": "b3c0e62d23def6616d9b1b15a6b203af",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/reciepient/EvidencePreview.jsx": {
+    "mtime": 1794249872.8228457,
+    "seen": 1794301573.1283152,
+    "ast_hash": "f27a800f25d41d120cd8fa484d6dd96b",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/viewer/ViewerPortal.jsx": {
+    "mtime": 1794307937.9117312,
+    "seen": 1794308079.1738808,
+    "ast_hash": "b9cba467e70aaa1a29dc32b410b6d737",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/services/api.js": {
+    "mtime": 1794305024.7907817,
+    "seen": 1794305473.869272,
+    "ast_hash": "3a14ea004d681bccf43ddd277e0e860b",
+    "semantic_hash": ""
+  },
+  "pinata-starter/sample.pdf": {
+    "mtime": 1742265440.0,
+    "seen": 1794239271.7166543,
+    "ast_hash": "da49bbe37855af62a6a8809453d17b83",
+    "semantic_hash": ""
+  },
+  "safeDocBe/db/database.js": {
+    "mtime": 1794304859.301317,
+    "seen": 1794305473.8689528,
+    "ast_hash": "f95871765d8af55126089d3b44cbda8f",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/audit/AuditPortal.jsx": {
+    "mtime": 1794306556.2105193,
+    "seen": 1794306669.9352884,
+    "ast_hash": "138bc5d578c121bf022c4e94be1475ee",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/audit/ChainOfCustodyTimeline.jsx": {
+    "mtime": 1794306565.2405498,
+    "seen": 1794306669.9352899,
+    "ast_hash": "9360f72278f29a4d55e76354ffc96b55",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/audit/CustodyCertificateModal.jsx": {
+    "mtime": 1794307968.5978289,
+    "seen": 1794308079.1737766,
+    "ast_hash": "a3f3f85088dc861ae3124ac524b1b87c",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/services/auditService.js": {
+    "mtime": 1794307501.0023797,
+    "seen": 1794308079.1739216,
+    "ast_hash": "3df3395f5b423a5a6c50cee387707258",
+    "semantic_hash": ""
+  },
+  "safeDocFe/src/components/reciepient/RejectModal.jsx": {
+    "mtime": 1794307532.829475,
+    "seen": 1794308079.1738775,
+    "ast_hash": "d7d7bc79695132e3a1a10170aa685d76",
+    "semantic_hash": ""
+  },
+  "generate_algorithms_pdf.py": {
+    "mtime": 1794328935.944869,
+    "seen": 1794329144.6164992,
+    "ast_hash": "b0a92f29c48657b56fa3c42913824acd",
+    "semantic_hash": ""
+  },
+  "DocSafe_Algorithms_and_Technical_Explanation.pdf": {
+    "mtime": 1794328962.9109445,
+    "seen": 1794329144.6173317,
+    "ast_hash": "0d3c10cd884b0d056eb3bb06dd702ef0",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1793283032.572942,
+    "seen": 1794239271.7166934,
+    "ast_hash": "ab7317ead8e146428efb7c2907efdbdf",
+    "semantic_hash": ""
+  },
+  "pinata-starter/package-lock.json": {
+    "mtime": 1742265440.0,
+    "seen": 1794239271.7166948,
+    "ast_hash": "9241b9345c6fad9f417a61679e13e298",
+    "semantic_hash": ""
+  },
+  "safeDocBe/package-lock.json": {
+    "mtime": 1793281595.9941623,
+    "seen": 1794239271.7166958,
+    "ast_hash": "8e14955618531662e49138627d3bac44",
+    "semantic_hash": ""
+  },
+  "safeDocFe/package-lock.json": {
+    "mtime": 1793283394.4069698,
+    "seen": 1794239271.7166967,
+    "ast_hash": "eff841c9e3ebd67349992cb0578ea653",
+    "semantic_hash": ""
+  }
+}

@@ -17,7 +17,7 @@ function App() {
           <Route path="viewer" element={<ViewerPortal />} />
           <Route path="admin" element={<AdminConsole />} />
           <Route path="audit" element={<AuditPortal />} />
-          <Route path="*" element={<div className="p-6 text-center text-gray-500">Page not found</div>} />
+          <Route path="*" element={<div className="p-6 text-center text-slate-500 dark:text-slate-400">Page not found</div>} />
         </Route>
       </Routes>
     </Router>

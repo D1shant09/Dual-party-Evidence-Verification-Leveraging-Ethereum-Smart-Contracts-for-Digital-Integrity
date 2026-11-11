@@ -34,12 +34,12 @@ export default function CustodyCertificateModal({ metadata, docInfo, timeline = 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl my-8 flex flex-col max-h-[90vh]">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-4xl my-8 flex flex-col max-h-[90vh] border border-slate-200 dark:border-slate-800 transition-colors">
         {/* Modal Header Actions (hidden during print) */}
-        <div className="p-4 border-b border-gray-200 flex items-center justify-between bg-gray-50 rounded-t-xl print:hidden">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-t-xl print:hidden">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-gray-900">Chain-of-Custody Certificate</span>
-            <span className="text-xs px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 font-semibold">
+            <span className="text-lg font-bold text-slate-900 dark:text-slate-100">Chain-of-Custody Certificate</span>
+            <span className="text-xs px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 font-semibold">
               Case {caseNumber}
             </span>
           </div>
@@ -47,7 +47,7 @@ export default function CustodyCertificateModal({ metadata, docInfo, timeline = 
             <button
               type="button"
               onClick={handlePrint}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow-sm flex items-center gap-1.5 transition-colors"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -57,15 +57,15 @@ export default function CustodyCertificateModal({ metadata, docInfo, timeline = 
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded transition-colors"
+              className="px-3 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded transition-colors cursor-pointer"
             >
               Close
             </button>
           </div>
         </div>
 
-        {/* Certificate Body (printable) */}
-        <div ref={certificateRef} className="p-8 space-y-6 overflow-y-auto text-left text-gray-900 font-sans print:p-0 print:m-0 print:overflow-visible">
+        {/* Certificate Body (printable - keep authentic legal certificate appearance) */}
+        <div ref={certificateRef} className="p-8 space-y-6 overflow-y-auto text-left bg-white text-gray-900 rounded-b-xl font-sans print:p-0 print:m-0 print:overflow-visible">
           {/* Certificate Header */}
           <div className="text-center border-b-2 border-gray-900 pb-5 space-y-2">
             <div className="inline-block px-3 py-1 bg-gray-900 text-white text-[11px] font-mono tracking-widest uppercase rounded">

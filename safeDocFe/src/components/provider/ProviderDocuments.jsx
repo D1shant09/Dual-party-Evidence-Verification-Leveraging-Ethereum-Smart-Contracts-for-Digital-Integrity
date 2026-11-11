@@ -229,7 +229,7 @@ export default function ProviderDocuments() {
 
   if (!isConnected) {
     return (
-      <div className="p-6 text-center text-gray-600 bg-white rounded-lg shadow-sm max-w-xl mx-auto mt-6">
+      <div className="p-6 text-center text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 rounded-xl shadow-xs border border-slate-200 dark:border-slate-800 max-w-xl mx-auto mt-6">
         Please connect your wallet to view your evidence records.
       </div>
     );
@@ -237,7 +237,7 @@ export default function ProviderDocuments() {
 
   if (!isLocalChain) {
     return (
-      <div className="p-6 text-center text-amber-700 bg-amber-50 rounded-lg border border-amber-200 max-w-xl mx-auto mt-6">
+      <div className="p-6 text-center text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800/60 max-w-xl mx-auto mt-6">
         Please switch to DocSafe Local Hardhat (Chain 31337).
       </div>
     );
@@ -257,7 +257,7 @@ export default function ProviderDocuments() {
       docs: awaitingApproval,
       emptyMsg: "No empty containers awaiting recipient approval.",
       badge: "Pending Consent",
-      badgeColor: "bg-amber-100 text-amber-800",
+      badgeColor: "bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300 dark:border dark:border-amber-800/60",
       action: null,
     },
     {
@@ -265,7 +265,7 @@ export default function ProviderDocuments() {
       docs: readyToUpload,
       emptyMsg: "No containers currently approved and awaiting file upload.",
       badge: "Approved for Upload",
-      badgeColor: "bg-indigo-100 text-indigo-800",
+      badgeColor: "bg-indigo-100 text-indigo-800 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border dark:border-indigo-800/60",
       action: "upload",
     },
     {
@@ -273,7 +273,7 @@ export default function ProviderDocuments() {
       docs: pendingValidation,
       emptyMsg: "No evidence pending validation.",
       badge: "Under Review",
-      badgeColor: "bg-blue-100 text-blue-800",
+      badgeColor: "bg-blue-100 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300 dark:border dark:border-blue-800/60",
       action: null,
     },
     {
@@ -281,7 +281,7 @@ export default function ProviderDocuments() {
       docs: inChangePhase,
       emptyMsg: "No documents in change phase.",
       badge: "Contested / Change Phase",
-      badgeColor: "bg-orange-100 text-orange-800",
+      badgeColor: "bg-orange-100 text-orange-800 dark:bg-orange-950/60 dark:text-orange-300 dark:border dark:border-orange-800/60",
       action: null,
     },
     {
@@ -289,7 +289,7 @@ export default function ProviderDocuments() {
       docs: validated,
       emptyMsg: "No validated evidence yet.",
       badge: "Validated",
-      badgeColor: "bg-emerald-100 text-emerald-800",
+      badgeColor: "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border dark:border-emerald-800/60",
       action: "forceUpdate",
     },
     {
@@ -297,37 +297,37 @@ export default function ProviderDocuments() {
       docs: rejected,
       emptyMsg: "No rejected evidence submissions.",
       badge: "Rejected / Defective",
-      badgeColor: "bg-red-100 text-red-800",
+      badgeColor: "bg-red-100 text-red-800 dark:bg-red-950/60 dark:text-red-300 dark:border dark:border-red-800/60",
       action: "resubmit",
     },
   ];
 
   return (
-    <div className="p-6 space-y-6 max-w-4xl mx-auto text-left">
-      <div className="flex justify-between items-center border-b pb-4">
+    <div className="p-6 space-y-6 max-w-4xl mx-auto text-left transition-colors">
+      <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900">Provider Evidence Records</h2>
-          <p className="text-xs text-gray-500 font-mono mt-1">Provider Address: {address}</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Provider Evidence Records</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 font-mono mt-1">Provider Address: {address}</p>
         </div>
         <button
           type="button"
           onClick={fetchDocuments}
           disabled={loading}
-          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-xs font-semibold text-gray-700 transition-colors shadow-sm"
+          className="px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-colors shadow-xs cursor-pointer"
         >
           {loading ? "Refreshing..." : "Refresh Records"}
         </button>
       </div>
 
       {fetchError && (
-        <div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200 text-sm">
+        <div className="p-4 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-200 rounded-lg border border-red-200 dark:border-red-800/60 text-sm">
           {fetchError}
         </div>
       )}
 
       {(isResubmitPending || isResubmitConfirming) && (
-        <div className="p-3 bg-blue-50 text-blue-800 rounded-lg border border-blue-200 text-xs flex items-center gap-2">
-          <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full" />
+        <div className="p-3 bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 rounded-lg border border-blue-200 dark:border-blue-800/60 text-xs flex items-center gap-2">
+          <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-blue-600 dark:border-blue-400 border-t-transparent rounded-full" />
           <span>
             {isResubmitPending ? "Please sign linked resubmission in MetaMask..." : "Confirming linked container on-chain..."}
           </span>
@@ -335,21 +335,21 @@ export default function ProviderDocuments() {
       )}
 
       {resubmitSuccessMsg && (
-        <div className="p-3 bg-emerald-50 text-emerald-800 rounded-lg border border-emerald-200 text-xs">
+        <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 rounded-lg border border-emerald-200 dark:border-emerald-800/60 text-xs">
           &#10003; {resubmitSuccessMsg}
         </div>
       )}
 
       {writeResubmitError && (
-        <div className="p-3 bg-red-50 text-red-800 rounded-lg border border-red-200 text-xs">
+        <div className="p-3 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200 rounded-lg border border-red-200 dark:border-red-800/60 text-xs">
           &#9888; Resubmission error: {writeResubmitError.shortMessage || writeResubmitError.message}
         </div>
       )}
 
       {documents.length === 0 && !loading && (
-        <div className="p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-900 text-xs space-y-1">
+        <div className="p-4 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 rounded-lg text-amber-900 dark:text-amber-200 text-xs space-y-1">
           <p className="font-semibold text-sm">No evidence containers found for address: <span className="font-mono text-xs">{address}</span></p>
-          <p className="text-amber-700">
+          <p className="text-amber-700 dark:text-amber-300">
             If you created documents from a different account in MetaMask (e.g. Account 3 / 0x90F7...), please <strong>switch your active account in MetaMask</strong> to that address.
           </p>
         </div>
@@ -357,35 +357,35 @@ export default function ProviderDocuments() {
 
       <div className="space-y-6">
         {statusSections.map(({ title, docs, emptyMsg, badge, badgeColor, action }) => (
-          <div key={title} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm space-y-3">
+          <div key={title} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 shadow-xs space-y-3 transition-colors">
             <div className="flex justify-between items-center">
-              <h3 className="text-base font-bold text-gray-800">{title}</h3>
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">{title}</h3>
               <span className={`text-xs px-2.5 py-0.5 rounded-full font-semibold ${badgeColor}`}>
                 {docs.length}
               </span>
             </div>
 
             {docs.length === 0 ? (
-              <p className="text-xs text-gray-400 italic">{emptyMsg}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 italic">{emptyMsg}</p>
             ) : (
               <div className="space-y-3">
                 {docs.map((doc) => (
                   <div
                     key={doc.id}
-                    className="p-4 bg-gray-50 rounded-lg border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                    className="p-4 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-200 dark:border-slate-700/80 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors"
                   >
                     <div className="space-y-1 text-xs">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="font-bold text-sm text-gray-900">
+                        <span className="font-bold text-sm text-slate-900 dark:text-slate-100">
                           {doc.title || `Document #${doc.id}`}
                         </span>
                         {doc.caseNumber && (
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-gray-200 text-gray-800 font-semibold">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold">
                             {doc.caseNumber}
                           </span>
                         )}
                         {doc.category && (
-                          <span className="px-2 py-0.5 rounded text-[10px] bg-purple-100 text-purple-800 font-semibold">
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60 font-semibold">
                             {doc.category}
                           </span>
                         )}
@@ -394,28 +394,28 @@ export default function ProviderDocuments() {
                         </span>
                       </div>
                       {doc.description && (
-                        <p className="text-gray-500 italic text-[11px]">{doc.description}</p>
+                        <p className="text-slate-500 dark:text-slate-400 italic text-[11px]">{doc.description}</p>
                       )}
-                      <p className="text-gray-600 font-mono">
-                        <span className="font-sans font-semibold text-gray-500">Recipient:</span> {doc.recipient}
+                      <p className="text-slate-600 dark:text-slate-300 font-mono">
+                        <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Recipient:</span> {doc.recipient}
                       </p>
                       {doc.ipfsHash && (
-                        <p className="text-gray-600 font-mono break-all">
-                          <span className="font-sans font-semibold text-gray-500">IPFS CID:</span> {doc.ipfsHash}
+                        <p className="text-slate-600 dark:text-slate-300 font-mono break-all">
+                          <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">IPFS CID:</span> {doc.ipfsHash}
                         </p>
                       )}
                       {doc.sha256Hash && (
-                        <p className="text-gray-600 font-mono break-all text-[11px]">
-                          <span className="font-sans font-semibold text-gray-500">SHA-256 Fingerprint:</span> {doc.sha256Hash}
+                        <p className="text-slate-600 dark:text-slate-300 font-mono break-all text-[11px]">
+                          <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">SHA-256 Fingerprint:</span> {doc.sha256Hash}
                         </p>
                       )}
                       {doc.proof && (
-                        <p className="text-gray-600 font-mono break-all">
-                          <span className="font-sans font-semibold text-gray-500">Proof:</span> {doc.proof}
+                        <p className="text-slate-600 dark:text-slate-300 font-mono break-all">
+                          <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Proof:</span> {doc.proof}
                         </p>
                       )}
                       {doc.rejectionReason && (
-                        <div className="p-2.5 bg-red-50 text-red-800 rounded-md border border-red-200 text-xs mt-1">
+                        <div className="p-2.5 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800/60 text-xs mt-1">
                           <span className="font-semibold block mb-0.5">Rejection Reason:</span>
                           <span className="italic">{doc.rejectionReason}</span>
                         </div>
@@ -427,7 +427,7 @@ export default function ProviderDocuments() {
                         <button
                           type="button"
                           onClick={() => setUploadModalDoc(doc)}
-                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors"
+                          className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-md shadow-xs transition-colors cursor-pointer"
                         >
                           Upload Evidence
                         </button>
@@ -443,7 +443,7 @@ export default function ProviderDocuments() {
                             setForceError("");
                             setForceStatus("idle");
                           }}
-                          className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors"
+                          className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-md shadow-xs transition-colors cursor-pointer"
                         >
                           Force Update
                         </button>
@@ -454,7 +454,7 @@ export default function ProviderDocuments() {
                           type="button"
                           disabled={isResubmitPending || isResubmitConfirming}
                           onClick={() => handleResubmit(doc)}
-                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors disabled:opacity-50 flex items-center gap-1.5"
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-md shadow-xs transition-colors disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
                         >
                           {isResubmitPending || isResubmitConfirming ? "Creating..." : "Create Linked Resubmission"}
                         </button>
@@ -483,80 +483,80 @@ export default function ProviderDocuments() {
       {/* Force Update modal (Algorithm 2) */}
       {forceUpdateDoc && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg p-6 space-y-4 text-left">
-            <div className="flex justify-between items-start border-b pb-3">
+          <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-lg p-6 space-y-4 text-left transition-colors">
+            <div className="flex justify-between items-start border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <h3 className="text-lg font-bold text-gray-900">Force Update Evidence</h3>
-                <p className="text-xs text-gray-500">Document #{forceUpdateDoc.id} (Algorithm 2)</p>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Force Update Evidence</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400">Document #{forceUpdateDoc.id} (Algorithm 2)</p>
               </div>
               <button
                 type="button"
                 onClick={() => setForceUpdateDoc(null)}
-                className="text-gray-400 hover:text-gray-600 text-2xl font-bold"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl font-bold cursor-pointer"
               >
                 &times;
               </button>
             </div>
 
-            <p className="text-xs text-gray-600">
+            <p className="text-xs text-slate-600 dark:text-slate-300">
               A force update replaces a previously validated document. It moves the document into the
-              <strong className="text-orange-700"> Change Phase</strong>, where the recipient can either accept or challenge it with a witness statement.
+              <strong className="text-orange-600 dark:text-orange-400"> Change Phase</strong>, where the recipient can either accept or challenge it with a witness statement.
             </p>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">New Evidence File</label>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">New Evidence File</label>
               <input
                 type="file"
                 onChange={(e) => setForceFile(e.target.files?.[0])}
-                className="block w-full text-xs text-gray-700 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-indigo-50 file:text-indigo-700 file:font-semibold hover:file:bg-indigo-100"
+                className="block w-full text-xs text-slate-700 dark:text-slate-300 file:mr-3 file:py-2 file:px-4 file:rounded file:border-0 file:bg-indigo-50 dark:file:bg-indigo-950/60 file:text-indigo-700 dark:file:text-indigo-300 file:font-semibold hover:file:bg-indigo-100 dark:hover:file:bg-indigo-900/60"
               />
               {forceFile && (
-                <p className="text-xs text-indigo-700 mt-1">{forceFile.name}</p>
+                <p className="text-xs text-indigo-600 dark:text-indigo-400 mt-1">{forceFile.name}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1">Proof / Justification for Change</label>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Proof / Justification for Change</label>
               <textarea
                 value={forceProof}
                 onChange={(e) => setForceProof(e.target.value)}
                 placeholder="Enter justification, corrected laboratory findings, or reference CID..."
                 rows={3}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-xs text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-md text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-400"
               />
             </div>
 
             {forceStatus === "uploading" && (
-              <div className="p-3 bg-blue-50 text-blue-700 rounded text-xs">
+              <div className="p-3 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-200 rounded text-xs border border-blue-200 dark:border-blue-800/60">
                 Uploading new evidence file to IPFS...
               </div>
             )}
             {(forceStatus === "signing" || isForcePending) && (
-              <div className="p-3 bg-indigo-50 text-indigo-700 rounded text-xs">
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-200 rounded text-xs border border-indigo-200 dark:border-indigo-800/60">
                 Confirm forceUpdateDocument transaction in MetaMask...
               </div>
             )}
             {isForceConfirming && (
-              <div className="p-3 bg-indigo-50 text-indigo-700 rounded text-xs">
+              <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-200 rounded text-xs border border-indigo-200 dark:border-indigo-800/60">
                 Confirming force update on blockchain...
               </div>
             )}
             {forceStatus === "done" && (
-              <div className="p-3 bg-green-50 text-green-700 rounded text-xs">
+              <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-200 rounded text-xs border border-emerald-200 dark:border-emerald-800/60">
                 &#10003; Document entered Change Phase! Recipient has been notified.
               </div>
             )}
             {forceError && (
-              <div className="p-3 bg-red-50 text-red-700 rounded text-xs">
+              <div className="p-3 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-200 rounded text-xs border border-red-200 dark:border-red-800/60">
                 &#9888; {forceError}
               </div>
             )}
 
-            <div className="flex gap-2 justify-end pt-3 border-t">
+            <div className="flex gap-2 justify-end pt-3 border-t border-slate-200 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setForceUpdateDoc(null)}
-                className="px-4 py-2 border border-gray-300 rounded-md text-xs font-semibold text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-slate-300 dark:border-slate-700 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -565,7 +565,7 @@ export default function ProviderDocuments() {
                   type="button"
                   onClick={handleForceUpdateSubmit}
                   disabled={!forceFile || !forceProof.trim() || forceStatus === "uploading" || isForcePending || isForceConfirming}
-                  className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-md disabled:bg-gray-300"
+                  className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold rounded-md disabled:bg-slate-300 dark:disabled:bg-slate-700 transition-colors cursor-pointer"
                 >
                   Submit Force Update
                 </button>

@@ -138,20 +138,20 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-lg flex flex-col gap-5 p-6 text-left">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 w-full max-w-lg flex flex-col gap-5 p-6 text-left transition-colors">
         {/* Header */}
-        <div className="flex justify-between items-start border-b pb-3">
+        <div className="flex justify-between items-start border-b border-slate-200 dark:border-slate-800 pb-3">
           <div>
-            <h2 className="text-xl font-bold text-gray-900">Upload Digital Evidence</h2>
-            <p className="text-xs text-gray-500 mt-1">
-              Document Container <span className="font-mono font-semibold text-indigo-600">#{documentId}</span>
+            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Upload Digital Evidence</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Document Container <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">#{documentId}</span>
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
             disabled={uploadState === "uploading" || uploadState === "signing" || isTxConfirming}
-            className="text-gray-400 hover:text-gray-600 text-2xl leading-none font-bold disabled:opacity-40"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-2xl leading-none font-bold disabled:opacity-40 cursor-pointer"
             aria-label="Close"
           >
             &times;
@@ -164,8 +164,8 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
           tabIndex={0}
           className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
             isDragging
-              ? "border-indigo-500 bg-indigo-50"
-              : "border-gray-300 hover:border-indigo-400 hover:bg-gray-50"
+              ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40"
+              : "border-slate-300 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-500 hover:bg-slate-50 dark:hover:bg-slate-800/60"
           }`}
           onDragOver={(e) => {
             e.preventDefault();
@@ -187,37 +187,37 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
           />
           {file ? (
             <div className="space-y-1">
-              <p className="text-sm text-indigo-700 font-semibold">{file.name}</p>
-              <p className="text-xs text-gray-500">Click or drag another file to replace</p>
+              <p className="text-sm text-indigo-600 dark:text-indigo-400 font-semibold">{file.name}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Click or drag another file to replace</p>
             </div>
           ) : (
             <>
-              <p className="text-sm text-gray-700 font-medium">
-                Drag & drop evidence here, or <span className="text-indigo-600 font-semibold underline">browse</span>
+              <p className="text-sm text-slate-700 dark:text-slate-300 font-medium">
+                Drag & drop evidence here, or <span className="text-indigo-600 dark:text-indigo-400 font-semibold underline">browse</span>
               </p>
-              <p className="text-xs text-gray-400 mt-1">{ALLOWED_LABEL} &middot; Max 100 MB</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">{ALLOWED_LABEL} &middot; Max 100 MB</p>
             </>
           )}
         </div>
 
         {/* File metadata & cryptographic hash */}
         {file && (
-          <div className="bg-gray-50 rounded-lg p-4 space-y-1.5 text-xs font-mono text-gray-700 border border-gray-200">
-            <p><span className="font-semibold text-gray-500 font-sans">Name:</span> {file.name}</p>
-            <p><span className="font-semibold text-gray-500 font-sans">Size:</span> {formatBytes(file.size)}</p>
-            <p><span className="font-semibold text-gray-500 font-sans">Type:</span> {file.type || "Unknown binary"}</p>
+          <div className="bg-slate-50 dark:bg-slate-800/60 rounded-lg p-4 space-y-1.5 text-xs font-mono text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <p><span className="font-semibold text-slate-500 dark:text-slate-400 font-sans">Name:</span> {file.name}</p>
+            <p><span className="font-semibold text-slate-500 dark:text-slate-400 font-sans">Size:</span> {formatBytes(file.size)}</p>
+            <p><span className="font-semibold text-slate-500 dark:text-slate-400 font-sans">Type:</span> {file.type || "Unknown binary"}</p>
             <p className="break-all">
-              <span className="font-semibold text-gray-500 font-sans">SHA-256 Fingerprint:</span>{" "}
+              <span className="font-semibold text-slate-500 dark:text-slate-400 font-sans">SHA-256 Fingerprint:</span>{" "}
               {uploadState === "hashing" ? (
-                <span className="text-amber-600 italic font-sans">Computing hash...</span>
+                <span className="text-amber-600 dark:text-amber-400 italic font-sans">Computing hash...</span>
               ) : (
-                <span className="text-emerald-700 font-bold">{sha256}</span>
+                <span className="text-emerald-700 dark:text-emerald-400 font-bold">{sha256}</span>
               )}
             </p>
             {ipfsCid && (
               <p className="break-all">
-                <span className="font-semibold text-gray-500 font-sans">IPFS CID:</span>{" "}
-                <span className="text-indigo-700 font-bold">{ipfsCid}</span>
+                <span className="font-semibold text-slate-500 dark:text-slate-400 font-sans">IPFS CID:</span>{" "}
+                <span className="text-indigo-600 dark:text-indigo-400 font-bold">{ipfsCid}</span>
               </p>
             )}
           </div>
@@ -225,31 +225,31 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
 
         {/* Progress & Feedback */}
         {uploadState === "uploading" && (
-          <div className="p-3 bg-blue-50 text-blue-700 rounded-md border border-blue-200 text-sm flex items-center gap-2">
+          <div className="p-3 bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-200 rounded-md border border-blue-200 dark:border-blue-800/60 text-sm flex items-center gap-2">
             <span className="animate-spin text-base">&#9696;</span>
             <span>Uploading file to IPFS storage gateway...</span>
           </div>
         )}
 
         {(uploadState === "signing" || isSignPending) && (
-          <div className="p-3 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-200 text-sm flex items-center gap-2">
+          <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-200 rounded-md border border-indigo-200 dark:border-indigo-800/60 text-sm flex items-center gap-2">
             <span>🦊</span>
             <span>Confirm transaction in MetaMask to bind CID to the smart contract...</span>
           </div>
         )}
 
         {isTxConfirming && (
-          <div className="p-3 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-200 text-sm flex items-center gap-2">
+          <div className="p-3 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-200 rounded-md border border-indigo-200 dark:border-indigo-800/60 text-sm flex items-center gap-2">
             <span className="animate-spin text-base">&#9696;</span>
             <span>Recording CID on local Hardhat blockchain...</span>
           </div>
         )}
 
         {uploadState === "done" && (
-          <div className="p-3 bg-green-50 text-green-700 rounded-md border border-green-200 text-sm space-y-1">
+          <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-200 rounded-md border border-emerald-200 dark:border-emerald-800/60 text-sm space-y-1">
             <p className="font-semibold">&#10003; Evidence successfully uploaded and recorded on-chain!</p>
             {txHash && (
-              <p className="font-mono text-xs text-gray-600 break-all">
+              <p className="font-mono text-xs text-slate-600 dark:text-slate-400 break-all">
                 Tx: {txHash}
               </p>
             )}
@@ -257,24 +257,24 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
         )}
 
         {errorMsg && (
-          <div className="p-3 bg-red-50 text-red-700 rounded-md border border-red-200 text-sm">
+          <div className="p-3 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800/60 text-sm">
             &#9888; {errorMsg}
           </div>
         )}
 
         {writeError && (
-          <div className="p-3 bg-red-50 text-red-700 rounded-md border border-red-200 text-sm">
+          <div className="p-3 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800/60 text-sm">
             &#9888; {writeError.shortMessage || writeError.message || "Smart contract transaction failed."}
           </div>
         )}
 
         {/* Actions */}
-        <div className="flex gap-3 justify-end pt-2 border-t">
+        <div className="flex gap-3 justify-end pt-2 border-t border-slate-200 dark:border-slate-800">
           <button
             type="button"
             onClick={onClose}
             disabled={uploadState === "uploading" || uploadState === "signing" || isTxConfirming}
-            className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-50 disabled:opacity-40"
+            className="px-4 py-2 rounded-md border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-40 transition-colors cursor-pointer"
           >
             {uploadState === "done" ? "Close" : "Cancel"}
           </button>
@@ -292,7 +292,7 @@ export default function UploadEvidenceModal({ documentId, onClose, onSuccess }) 
                 isSignPending ||
                 isTxConfirming
               }
-              className="px-5 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed shadow-sm transition-colors"
+              className="px-5 py-2 rounded-md bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700 disabled:bg-slate-400 dark:disabled:bg-slate-700 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer"
             >
               {uploadState === "uploading"
                 ? "Uploading to IPFS..."

@@ -1,5 +1,8 @@
 {
   "3": "wagmi",
   "4": "src/Home.jsx",
-  "7": "safeDocBe/package.json"
+  "7": "safeDocBe/package.json",
+  "8": "generate_algorithms_pdf.py",
+  "9": "AuditPortal.jsx",
+  "10": "main.jsx"
 }

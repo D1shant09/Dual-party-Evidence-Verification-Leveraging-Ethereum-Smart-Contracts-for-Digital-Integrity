@@ -1,7 +1,7 @@
 html,
 body {
-  background-color: #1b1b1f;
-  color: white;
+  background-color: var(--bg-primary, #f8fafc);
+  color: var(--text-primary, #0f172a);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
   margin: 0;
@@ -10,27 +10,33 @@ body {
 }
 
 .avatar {
-  background-color: #1b1b1f;
+  background-color: #e2e8f0;
   border-radius: 100%;
   height: 38px;
   width: 38px;
 }
 
+.dark .avatar {
+  background-color: #334155;
+}
+
 .button {
-  background-color: #646cff;
-  border-color: #747bff;
+  background-color: #4f46e5;
+  border-color: #6366f1;
   border-radius: 20px;
-  border: 1px solid #747bff;
+  border: 1px solid #6366f1;
   color: #ffffff;
   font-size: 14px;
   font-weight: 500;
   height: 38px;
   line-height: 38px;
   padding: 0 20px;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, border-color 0.2s;
+  cursor: pointer;
 }
 .button:hover {
-  background-color: #747bff;
+  background-color: #4338ca;
+  border-color: #4f46e5;
 }
 .button:disabled {
   opacity: 0.5;
@@ -50,12 +56,21 @@ body {
 }
 
 .container {
-  background-color: #202127;
-  border-radius: 8px;
-  border: 1px solid #2e2e32;
+  background-color: var(--bg-surface, #ffffff);
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #e2e8f0);
   padding: 16px;
-  margin: 16px;
+  margin: 16px auto;
   width: auto;
+  max-width: 1280px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.dark .container {
+  background-color: var(--bg-surface, #111827);
+  border: 1px solid var(--border-color, #1f2937);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 .inline {
@@ -73,8 +88,13 @@ body {
 }
 
 .text {
-  font-weight: 400;
+  font-weight: 500;
   white-space: nowrap;
+  color: var(--text-primary, #0f172a);
+}
+
+.dark .text {
+  color: var(--text-primary, #f8fafc);
 }
 
 .row {
@@ -91,9 +111,13 @@ body {
 }
 
 .subtext {
-  opacity: 0.7;
+  color: var(--text-muted, #64748b);
   font-weight: 400;
   font-size: 12px;
+}
+
+.dark .subtext {
+  color: var(--text-muted, #94a3b8);
 }
 
 .stack {

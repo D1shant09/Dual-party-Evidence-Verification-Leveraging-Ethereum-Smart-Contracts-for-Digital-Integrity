@@ -89,14 +89,14 @@ export default function EvidencePreview({ cid, onClose }) {
   const isPdf = contentType === "application/pdf";
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4 space-y-4 shadow-sm text-left">
-      <div className="flex justify-between items-center border-b pb-2">
-        <h4 className="text-sm font-bold text-gray-800">Decentralized Evidence Preview</h4>
+    <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 space-y-4 shadow-xs text-left transition-colors">
+      <div className="flex justify-between items-center border-b border-slate-200 dark:border-slate-800 pb-2">
+        <h4 className="text-sm font-bold text-slate-800 dark:text-slate-100">Decentralized Evidence Preview</h4>
         {onClose && (
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 text-sm font-semibold"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-semibold cursor-pointer"
           >
             Hide
           </button>
@@ -104,14 +104,14 @@ export default function EvidencePreview({ cid, onClose }) {
       </div>
 
       {loading && (
-        <div className="p-4 text-xs text-gray-500 italic flex items-center gap-2">
+        <div className="p-4 text-xs text-slate-500 dark:text-slate-400 italic flex items-center gap-2">
           <span className="animate-spin text-base">&#9696;</span>
           <span>Fetching evidence content from IPFS via local gateway...</span>
         </div>
       )}
 
       {error && (
-        <div className="p-3 bg-red-50 text-red-700 rounded text-xs border border-red-200">
+        <div className="p-3 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-200 rounded text-xs border border-red-200 dark:border-red-800/60">
           &#9888; {error}
         </div>
       )}
@@ -119,28 +119,28 @@ export default function EvidencePreview({ cid, onClose }) {
       {!loading && !error && (
         <>
           {/* Metadata & Integrity verification */}
-          <div className="bg-gray-50 rounded-md p-3 text-xs font-mono space-y-1 border border-gray-200">
-            <p className="text-gray-600 font-sans font-semibold">
-              MIME: <span className="font-mono text-gray-900">{contentType || "binary/octet-stream"}</span>
+          <div className="bg-slate-50 dark:bg-slate-800/60 rounded-md p-3 text-xs font-mono space-y-1 border border-slate-200 dark:border-slate-700">
+            <p className="text-slate-600 dark:text-slate-400 font-sans font-semibold">
+              MIME: <span className="font-mono text-slate-900 dark:text-slate-100">{contentType || "binary/octet-stream"}</span>
               <span className="ml-3 font-sans font-semibold">Size:</span>{" "}
-              <span className="font-mono text-gray-900">{formatBytes(fileSize)}</span>
+              <span className="font-mono text-slate-900 dark:text-slate-100">{formatBytes(fileSize)}</span>
             </p>
-            <p className="break-all text-gray-700">
-              <span className="font-sans font-semibold text-gray-500">IPFS CID:</span> {cid}
+            <p className="break-all text-slate-700 dark:text-slate-300">
+              <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">IPFS CID:</span> {cid}
             </p>
-            <p className="break-all text-emerald-800">
-              <span className="font-sans font-semibold text-gray-500">SHA-256 Fingerprint:</span>{" "}
+            <p className="break-all text-emerald-700 dark:text-emerald-400">
+              <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">SHA-256 Fingerprint:</span>{" "}
               <span className="font-bold">{computedSha256}</span>
             </p>
           </div>
 
           {/* Media preview renderers */}
-          <div className="flex justify-center bg-gray-100 rounded p-2 overflow-hidden">
+          <div className="flex justify-center bg-slate-100 dark:bg-slate-800/80 rounded p-2 overflow-hidden border border-slate-200 dark:border-slate-700">
             {isImage && (
               <img
                 src={objectUrl}
                 alt="Digital Evidence"
-                className="max-h-96 max-w-full rounded object-contain shadow-sm"
+                className="max-h-96 max-w-full rounded object-contain shadow-xs"
               />
             )}
 
@@ -148,7 +148,7 @@ export default function EvidencePreview({ cid, onClose }) {
               <iframe
                 src={objectUrl}
                 title="Evidence PDF Preview"
-                className="w-full h-96 rounded border border-gray-300"
+                className="w-full h-96 rounded border border-slate-300 dark:border-slate-700 bg-white"
               />
             )}
 
@@ -169,7 +169,7 @@ export default function EvidencePreview({ cid, onClose }) {
             )}
 
             {!isImage && !isPdf && !isVideo && !isAudio && (
-              <div className="p-6 text-center text-xs text-gray-600 space-y-1">
+              <div className="p-6 text-center text-xs text-slate-600 dark:text-slate-300 space-y-1">
                 <p className="font-semibold">Binary Document / Report</p>
                 <p>Preview rendering not supported directly in browser for this file type.</p>
               </div>
@@ -182,7 +182,7 @@ export default function EvidencePreview({ cid, onClose }) {
               <a
                 href={objectUrl}
                 download={`evidence-${(cid || "").slice(0, 10)}${MIME_EXTENSION_MAP[contentType] || ""}`}
-                className="inline-flex items-center px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded shadow-sm transition-colors"
+                className="inline-flex items-center px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded shadow-xs transition-colors cursor-pointer"
               >
                 Download Evidence File
               </a>

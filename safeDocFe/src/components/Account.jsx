@@ -15,48 +15,41 @@ export function Account() {
   const currentChain = chains.find((c) => c.id === chainId);
 
   return (
-    <div className="row" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-        <div className="inline">
+    <div className="row flex flex-col gap-2">
+      <div className="flex justify-between items-center w-full">
+        <div className="inline flex items-center gap-2">
           {ensAvatar ? (
             <img alt="ENS Avatar" className="avatar" src={ensAvatar} />
           ) : (
             <div className="avatar" />
           )}
-          <div className="stack">
+          <div className="stack text-left">
             {address && (
-              <div className="text">
+              <div className="text text-slate-900 dark:text-slate-100 font-medium">
                 {ensName ? `${ensName} (${formattedAddress})` : formattedAddress}
               </div>
             )}
-            <div className="subtext">
+            <div className="subtext text-slate-500 dark:text-slate-400 text-xs">
               Connected to {connector?.name} | Network: {currentChain?.name || `Chain ID ${chainId}`}
             </div>
           </div>
         </div>
-        <button className="button" onClick={() => disconnect()} type="button">
+        <button
+          className="px-4 py-1.5 rounded-full text-xs font-semibold bg-slate-200 hover:bg-slate-300 text-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 border border-slate-300 dark:border-slate-700 transition-colors"
+          onClick={() => disconnect()}
+          type="button"
+        >
           Disconnect
         </button>
       </div>
 
       {!isLocalChain && (
-        <div style={{
-          backgroundColor: '#fff3cd',
-          color: '#856404',
-          border: '1px solid #ffeeba',
-          borderRadius: '4px',
-          padding: '8px 12px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          fontSize: '14px'
-        }}>
+        <div className="bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-200 border border-amber-200 dark:border-amber-800/60 rounded-lg p-2.5 flex justify-between items-center text-sm transition-colors">
           <span>
             Warning: Connected to Chain {chainId}. Please switch to DocSafe Local Hardhat (Chain 31337) to interact with the local contract.
           </span>
           <button
-            className="button"
-            style={{ marginLeft: '12px', padding: '4px 8px', fontSize: '12px' }}
+            className="ml-3 px-3 py-1 rounded text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white transition-colors"
             onClick={() => switchChain({ chainId: docSafeLocal.id })}
             type="button"
           >

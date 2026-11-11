@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg-primary: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #f1f5f9;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border-color: #e2e8f0;
+  --border-subtle: #f1f5f9;
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+}
+
+.dark {
+  --bg-primary: #0b0f19;
+  --bg-surface: #111827;
+  --bg-surface-elevated: #1f2937;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  --border-subtle: #1e293b;
+  --card-bg: #111827;
+  --card-border: #1f2937;
+}
+
+/* Custom smooth theme transitions */
+html {
+  color-scheme: light;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+/* Scrollbar styling for light and dark themes */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background-color: #334155;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background-color: #475569;
+}
