@@ -31,17 +31,48 @@
 /* Custom smooth theme transitions */
 html {
   color-scheme: light;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 html.dark {
   color-scheme: dark;
 }
 
+/* Themed Browser Selection */
+::selection {
+  background-color: rgba(79, 70, 229, 0.2);
+  color: inherit;
+}
+
+.dark ::selection {
+  background-color: rgba(99, 102, 241, 0.35);
+  color: inherit;
+}
+
+/* Caret Color */
+* {
+  caret-color: #4f46e5;
+}
+
+.dark * {
+  caret-color: #818cf8;
+}
+
+/* Tabular Numerals for Evidentiary Precision */
+.font-mono, table, time, [data-tabular] {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Accessible Default Focus Ring */
+:focus-visible {
+  outline: 2px solid #6366f1;
+  outline-offset: 2px;
+}
+
 /* Scrollbar styling for light and dark themes */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 
 ::-webkit-scrollbar-track {

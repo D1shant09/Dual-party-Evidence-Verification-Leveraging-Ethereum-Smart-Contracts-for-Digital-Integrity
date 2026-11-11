@@ -1,15 +1,21 @@
+import { useState } from "react";
+
 export default function ChainOfCustodyTimeline({ timeline = [] }) {
+  const [copiedKey, setCopiedKey] = useState("");
+
   if (!timeline || timeline.length === 0) {
     return (
-      <div className="p-8 text-center text-slate-400 dark:text-slate-500 italic bg-slate-50 dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 transition-colors">
+      <div className="p-8 text-center text-slate-400 dark:text-slate-500 italic bg-white dark:bg-slate-900 rounded-xl border border-dashed border-slate-200 dark:border-slate-800 transition-colors">
         No audit events recorded for this evidence container yet.
       </div>
     );
   }
 
-  const copyToClipboard = (text) => {
+  const copyToClipboard = (text, key) => {
     if (!text) return;
     navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(""), 2000);
   };
 
   const formatDate = (isoStr) => {
@@ -26,7 +32,7 @@ export default function ChainOfCustodyTimeline({ timeline = [] }) {
   };
 
   return (
-    <div className="relative pl-6 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-indigo-100 dark:before:bg-slate-700 transition-colors">
+    <div className="relative pl-6 space-y-6 before:absolute before:left-3 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800 transition-colors">
       {timeline.map((event, idx) => {
         const isLast = idx === timeline.length - 1;
         const shortActor =
@@ -43,17 +49,17 @@ export default function ChainOfCustodyTimeline({ timeline = [] }) {
           <div key={`timeline-${idx}-${event.timestamp}`} className="relative group">
             {/* Circle Node on Timeline */}
             <div
-              className={`absolute -left-[1.85rem] top-1.5 w-6 h-6 rounded-full border-2 flex items-center justify-center text-[10px] font-bold ${
+              className={`absolute -left-[1.85rem] top-1.5 w-6 h-6 rounded-full border flex items-center justify-center text-[10px] font-bold ${
                 isLast
                   ? "bg-indigo-600 border-indigo-700 text-white shadow-xs ring-4 ring-indigo-50 dark:ring-indigo-950/60"
-                  : "bg-white dark:bg-slate-800 border-indigo-400 dark:border-indigo-500 text-indigo-700 dark:text-indigo-300 shadow-2xs"
+                  : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 shadow-2xs"
               }`}
             >
               {idx + 1}
             </div>
 
             {/* Event Content Card */}
-            <div className="bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 p-4 shadow-2xs hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors text-left space-y-2">
+            <div className="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-4 shadow-2xs hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors text-left space-y-2">
               <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-2">
                 <div className="flex items-center gap-2">
                   <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">{event.title}</h4>
@@ -74,18 +80,18 @@ export default function ChainOfCustodyTimeline({ timeline = [] }) {
               <p className="text-xs text-slate-700 dark:text-slate-300">{event.description}</p>
 
               {/* Details & Provenance Grid */}
-              <div className="pt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] font-mono text-slate-600 dark:text-slate-300 bg-slate-50/80 dark:bg-slate-800/60 rounded p-2 border border-slate-100 dark:border-slate-700/80">
-                <div>
-                  <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Actor:</span>{" "}
+              <div className="pt-2 flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] font-mono text-slate-600 dark:text-slate-300 bg-slate-50/80 dark:bg-slate-800/60 rounded-lg p-2.5 border border-slate-100 dark:border-slate-700/80">
+                <div className="flex items-center gap-1">
+                  <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Actor:</span>
                   <button
                     type="button"
-                    onClick={() => copyToClipboard(event.actor)}
+                    onClick={() => copyToClipboard(event.actor, `actor-${idx}`)}
                     title="Click to copy actor address"
                     className="hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer font-bold text-slate-800 dark:text-slate-200"
                   >
-                    {shortActor}
+                    {copiedKey === `actor-${idx}` ? <span className="text-emerald-600 font-sans">Copied!</span> : shortActor}
                   </button>
-                  {event.role && <span className="ml-1 text-slate-400 font-sans">({event.role})</span>}
+                  {event.role && <span className="text-slate-400 font-sans">({event.role})</span>}
                 </div>
 
                 {event.blockNumber && (
@@ -96,29 +102,31 @@ export default function ChainOfCustodyTimeline({ timeline = [] }) {
                 )}
 
                 {event.txHash && (
-                  <div>
-                    <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Tx:</span>{" "}
+                  <div className="flex items-center gap-1">
+                    <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Tx:</span>
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(event.txHash)}
+                      onClick={() => copyToClipboard(event.txHash, `tx-${idx}`)}
                       title="Click to copy transaction hash"
                       className="hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer text-slate-800 dark:text-slate-200"
                     >
-                      {shortTx}
+                      {copiedKey === `tx-${idx}` ? <span className="text-emerald-600 font-sans">Copied!</span> : shortTx}
                     </button>
                   </div>
                 )}
 
                 {event.cid && (
-                  <div className="w-full break-all">
-                    <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">CID:</span>{" "}
+                  <div className="w-full break-all flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60">
+                    <div className="truncate">
+                      <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">CID: </span>
+                      <span className="text-indigo-600 dark:text-indigo-400">{event.cid}</span>
+                    </div>
                     <button
                       type="button"
-                      onClick={() => copyToClipboard(event.cid)}
-                      title="Click to copy IPFS CID"
-                      className="hover:underline hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer text-indigo-600 dark:text-indigo-400"
+                      onClick={() => copyToClipboard(event.cid, `cid-${idx}`)}
+                      className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer text-[10px] font-sans shrink-0"
                     >
-                      {event.cid}
+                      {copiedKey === `cid-${idx}` ? <span className="text-emerald-600 font-medium">Copied!</span> : "Copy"}
                     </button>
                   </div>
                 )}

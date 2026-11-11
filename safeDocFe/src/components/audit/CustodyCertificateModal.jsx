@@ -33,13 +33,13 @@ export default function CustodyCertificateModal({ metadata, docInfo, timeline = 
   const rejectionReason = docInfo?.rejectionReason || "";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs overflow-y-auto">
       <div className="bg-white dark:bg-slate-900 rounded-xl shadow-2xl w-full max-w-4xl my-8 flex flex-col max-h-[90vh] border border-slate-200 dark:border-slate-800 transition-colors">
         {/* Modal Header Actions (hidden during print) */}
         <div className="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-900 rounded-t-xl print:hidden">
           <div className="flex items-center gap-2">
-            <span className="text-lg font-bold text-slate-900 dark:text-slate-100">Chain-of-Custody Certificate</span>
-            <span className="text-xs px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 font-semibold">
+            <span className="text-base font-bold text-slate-900 dark:text-slate-100">Chain-of-Custody Certificate</span>
+            <span className="text-xs px-2.5 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60 font-semibold font-mono">
               Case {caseNumber}
             </span>
           </div>
@@ -47,24 +47,24 @@ export default function CustodyCertificateModal({ metadata, docInfo, timeline = 
             <button
               type="button"
               onClick={handlePrint}
-              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
+              className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-xs flex items-center gap-1.5 transition-colors cursor-pointer"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
               </svg>
-              Print / Save as PDF
+              <span>Print / Save as PDF</span>
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded transition-colors cursor-pointer"
+              className="px-3 py-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
             >
               Close
             </button>
           </div>
         </div>
 
-        {/* Certificate Body (printable - keep authentic legal certificate appearance) */}
+        {/* Certificate Body (printable - keeps authentic legal paper certificate styling) */}
         <div ref={certificateRef} className="p-8 space-y-6 overflow-y-auto text-left bg-white text-gray-900 rounded-b-xl font-sans print:p-0 print:m-0 print:overflow-visible">
           {/* Certificate Header */}
           <div className="text-center border-b-2 border-gray-900 pb-5 space-y-2">
@@ -102,12 +102,18 @@ export default function CustodyCertificateModal({ metadata, docInfo, timeline = 
                   <td className="px-4 py-2 font-semibold bg-gray-50/70">Verification Status:</td>
                   <td className="px-4 py-2">
                     {isRejected ? (
-                      <span className="font-bold text-red-700">
-                        &#10007; REJECTED / NON-ADMISSIBLE {rejectionReason ? `(${rejectionReason})` : ""}
+                      <span className="font-bold text-red-700 inline-flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                        <span>REJECTED / NON-ADMISSIBLE {rejectionReason ? `(${rejectionReason})` : ""}</span>
                       </span>
                     ) : isValid ? (
-                      <span className="font-bold text-emerald-800">
-                        &#10003; VERIFIED &amp; COURT-ADMISSIBLE
+                      <span className="font-bold text-emerald-800 inline-flex items-center gap-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        <span>VERIFIED &amp; COURT-ADMISSIBLE</span>
                       </span>
                     ) : (
                       <span className="font-bold text-amber-700">

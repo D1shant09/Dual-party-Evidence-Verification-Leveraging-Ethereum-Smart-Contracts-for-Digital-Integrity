@@ -1,0 +1,162 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-11T10:54:00Z",
+  "title": "Design System: DocSafe Evidence Chain",
+  "extensions": {
+    "colorMeta": {
+      "primary": {
+        "role": "primary",
+        "displayName": "Courtroom Indigo",
+        "canonical": "#4f46e5",
+        "tonalRamp": ["#312e81", "#3730a3", "#4338ca", "#4f46e5", "#6366f1", "#818cf8", "#a5b4fc", "#eef2ff"]
+      },
+      "integrity-emerald": {
+        "role": "secondary",
+        "displayName": "Integrity Emerald",
+        "canonical": "#059669",
+        "tonalRamp": ["#064e3b", "#065f46", "#047857", "#059669", "#10b981", "#34d399", "#a7f3d0", "#ecfdf5"]
+      },
+      "dispute-amber": {
+        "role": "secondary",
+        "displayName": "Dispute Amber",
+        "canonical": "#d97706",
+        "tonalRamp": ["#451a03", "#78350f", "#92400e", "#b45309", "#d97706", "#f59e0b", "#fde68a", "#fffbeb"]
+      },
+      "defect-crimson": {
+        "role": "secondary",
+        "displayName": "Defect Crimson",
+        "canonical": "#dc2626",
+        "tonalRamp": ["#450a0a", "#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#fecaca", "#fef2f2"]
+      },
+      "neutral-bg": {
+        "role": "neutral",
+        "displayName": "Canvas Slate Light",
+        "canonical": "#f8fafc",
+        "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f8fafc"]
+      },
+      "dark-bg": {
+        "role": "neutral",
+        "displayName": "Obsidian Slate Dark",
+        "canonical": "#0b0f19",
+        "tonalRamp": ["#020617", "#0b0f19", "#111827", "#1e293b", "#334155", "#64748b", "#94a3b8", "#f8fafc"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display Title", "purpose": "Major portal headers and dashboard page titles." },
+      "headline": { "displayName": "Section Headline", "purpose": "Container cards and section headers." },
+      "title": { "displayName": "Card Title", "purpose": "Individual evidence container titles." },
+      "body": { "displayName": "Body Text", "purpose": "Explanatory copy and form labels." },
+      "label": { "displayName": "Monospace Evidentiary Label", "purpose": "SHA-256 hashes, CIDs, Ethereum addresses, and transaction hashes." }
+    },
+    "shadows": [
+      { "name": "shadow-xs", "value": "0 1px 2px 0 rgba(0, 0, 0, 0.05)", "purpose": "Subtle baseline border grounding on cards." },
+      { "name": "shadow-2xl", "value": "0 25px 50px -12px rgba(0, 0, 0, 0.25)", "purpose": "Modal dialog elevation over backdrop." }
+    ],
+    "motion": [
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Color and background transition easing." },
+      { "name": "duration-fast", "value": "150ms", "purpose": "Button and tab hover transitions." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Action Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Authoritative primary trigger for container creation, upload confirmation, and verification.",
+      "html": "<button class=\"ds-btn-primary\">Initiate Evidence Container</button>",
+      "css": ".ds-btn-primary { background: #4f46e5; color: #ffffff; padding: 8px 16px; font-size: 13px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; border: 1px solid transparent; border-radius: 6px; cursor: pointer; transition: background-color 0.15s ease, box-shadow 0.15s ease; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); } .ds-btn-primary:hover { background: #4338ca; } .ds-btn-primary:focus-visible { outline: 2px solid #818cf8; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Semantic Status Badge (Validated)",
+      "kind": "chip",
+      "refersTo": "badge-validated",
+      "description": "Cryptographically verified consensus indicator.",
+      "html": "<span class=\"ds-badge-validated\">&#10003; Validated</span>",
+      "css": ".ds-badge-validated { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; font-size: 11px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; border-radius: 9999px; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; line-height: 1.4; }"
+    },
+    {
+      "name": "Semantic Status Badge (Contested)",
+      "kind": "chip",
+      "refersTo": "badge-contested",
+      "description": "Algorithm 2 active dispute / revision phase indicator.",
+      "html": "<span class=\"ds-badge-contested\">In Change Phase</span>",
+      "css": ".ds-badge-contested { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; font-size: 11px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; border-radius: 9999px; background: #fffbeb; color: #92400e; border: 1px solid #fde68a; line-height: 1.4; }"
+    },
+    {
+      "name": "Semantic Status Badge (Rejected)",
+      "kind": "chip",
+      "refersTo": "badge-rejected",
+      "description": "Formally rejected evidence submission requiring linked resubmission.",
+      "html": "<span class=\"ds-badge-rejected\">&#10007; Rejected</span>",
+      "css": ".ds-badge-rejected { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; font-size: 11px; font-weight: 600; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; border-radius: 9999px; background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; line-height: 1.4; }"
+    },
+    {
+      "name": "Monospace Cryptographic Digest Box",
+      "kind": "custom",
+      "refersTo": "crypto-digest-box",
+      "description": "High-density hash container pairing human-readable label with monospace fingerprint.",
+      "html": "<div class=\"ds-digest-box\"><span class=\"ds-digest-label\">SHA-256 Fingerprint:</span><span class=\"ds-digest-value\">e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</span></div>",
+      "css": ".ds-digest-box { display: flex; flex-direction: column; gap: 2px; padding: 8px 12px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-digest-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #64748b; } .ds-digest-value { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 700; color: #0f172a; word-break: break-all; }"
+    },
+    {
+      "name": "Evidence Container Card",
+      "kind": "card",
+      "refersTo": "card-surface",
+      "description": "Standard evidence container unit card with case number and status alignment.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\"><span class=\"ds-card-title\">Ballistics Analysis Container #12</span><span class=\"ds-card-case\">CR-2026-089</span></div><p class=\"ds-card-desc\">Microscopic groove striations matching recovered firearm evidence.</p></div>",
+      "css": ".ds-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 20px; box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; gap: 8px; } .ds-card-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; } .ds-card-title { font-size: 15px; font-weight: 700; color: #0f172a; } .ds-card-case { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 11px; font-weight: 600; padding: 2px 8px; background: #e2e8f0; color: #1e293b; border-radius: 4px; } .ds-card-desc { font-size: 12px; color: #64748b; margin: 0; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Cryptographic Evidence Vault",
+    "overview": "DocSafe is an institutional judicial and forensic evidentiary platform. The interface balances the solemn procedural gravity of a courtroom record with the uncompromising mathematical precision of distributed cryptographic systems. Visual elements prioritize procedural clarity, auditability, and immediate human comprehension over speculative decoration or futuristic glow.",
+    "keyCharacteristics": [
+      "Institutional Gravitas: Restrained palette grounded in Courtroom Indigo and neutral slates; avoids distracting gradients and cyber-neon styling.",
+      "Micro-Data Density: Monospace data blocks formatted for quick visual verification and instant copy-to-clipboard actions.",
+      "Unambiguous Semantic Signaling: Rigorous status indicators where each lifecycle stage has a dedicated, universally consistent chromatic identity.",
+      "Physical Document Preservation: Authentic document aesthetics for the printable custody certificate that remain clean white paper regardless of active screen theme."
+    ],
+    "rules": [
+      {
+        "name": "The Zero-Glow Rule",
+        "body": "No decorative neon drop-shadows, blurred glowing borders, or pulsing halos. Visual pop is achieved strictly through crisp 1px borders, subtle surface contrast, and solid badge fills.",
+        "section": "colors"
+      },
+      {
+        "name": "The Semantic Reserved Rule",
+        "body": "Crimson is banned for decorative icons or secondary accents; red is reserved exclusively for defective, rejected, or revoked evidentiary states.",
+        "section": "colors"
+      },
+      {
+        "name": "The Dual-Identity Rule",
+        "body": "Monospace hashes and hexadecimal addresses must never float without an accompanying human-readable semantic label.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces are planar at rest. Shadow elevation is never used as pure ornamentation and appears only to indicate elevated interaction.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do always pair cryptographic hashes (SHA-256, IPFS CID, Tx Hashes) with clickable copy-to-clipboard affordances.",
+      "Do display both the human-readable case number and title alongside numeric document IDs.",
+      "Do maintain a strict 1px border around cards and inputs in both light and dark modes to preserve crisp structural contrast.",
+      "Do preserve authentic light paper styling on the Chain-of-Custody Certificate so legal printouts remain clean and official.",
+      "Do provide immediate inline transaction state feedback."
+    ],
+    "donts": [
+      "Don't use neon glowing box-shadows, scanlines, or decorative futuristic sci-fi tropes.",
+      "Don't use red accents for non-destructive actions, neutral indicators, or decorative buttons.",
+      "Don't render cryptographic hashes in proportional sans-serif fonts; always use standard monospace.",
+      "Don't rely on color alone to communicate verification status; always pair with an explicit textual status label.",
+      "Don't allow long cryptographic strings to overflow mobile viewports; enforce break-all or truncate with copy tooltips."
+    ]
+  }
+}

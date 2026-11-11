@@ -18,8 +18,16 @@ export default function ViewerPortal() {
   const [docInfo, setDocInfo] = useState(null);
   const [caseMeta, setCaseMeta] = useState(null);
   const [associatedDocs, setAssociatedDocs] = useState([]);
+  const [copiedKey, setCopiedKey] = useState("");
 
   const isLocalChain = chainId === docSafeLocal.id;
+
+  const copyToClipboard = (text, key) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(""), 2000);
+  };
 
   // Fetch documents associated with connected wallet as provider or recipient
   useEffect(() => {
@@ -130,8 +138,13 @@ export default function ViewerPortal() {
 
   if (!isConnected) {
     return (
-      <div className="p-6 text-center text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 rounded-xl shadow-xs border border-slate-200 dark:border-slate-800 max-w-xl mx-auto mt-6 transition-colors">
-        Please connect your wallet to access the Authorized Viewer Portal.
+      <div className="p-8 text-center text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 rounded-xl shadow-xs border border-slate-200 dark:border-slate-800 max-w-xl mx-auto mt-6 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" className="w-10 h-10 mx-auto text-slate-400 dark:text-slate-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+        </svg>
+        <p className="font-semibold text-slate-800 dark:text-slate-100">Wallet Not Connected</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Please connect your wallet to access the Authorized Viewer Portal.</p>
       </div>
     );
   }
@@ -139,43 +152,59 @@ export default function ViewerPortal() {
   if (!isLocalChain) {
     return (
       <div className="p-6 text-center text-amber-800 dark:text-amber-200 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-800/60 max-w-xl mx-auto mt-6 transition-colors">
-        Please switch to DocSafe Local Hardhat (Chain 31337).
+        <p className="font-semibold text-sm">Unsupported Network</p>
+        <p className="text-xs mt-1">Please switch to DocSafe Local Hardhat (Chain 31337).</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 max-w-3xl mx-auto text-left space-y-6 transition-colors">
+    <div className="p-4 sm:p-6 max-w-3xl mx-auto text-left space-y-6 transition-colors">
       <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Authorized Viewer Portal</h2>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-          Inspect and verify digital evidence records you have been granted permission to access.
+          Inspect and verify digital evidence records you have been granted permission to access via on-chain access control.
         </p>
       </div>
 
       {/* Document lookup form */}
-      <form onSubmit={handleLookup} className="flex gap-3">
-        <input
-          type="number"
-          min="1"
-          value={docIdInput}
-          onChange={(e) => setDocIdInput(e.target.value)}
-          placeholder="Enter Document ID (e.g. 1)"
-          className="flex-1 px-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-400"
-        />
+      <form onSubmit={handleLookup} className="flex gap-2">
+        <div className="relative flex-1">
+          <input
+            type="number"
+            min="1"
+            value={docIdInput}
+            onChange={(e) => setDocIdInput(e.target.value)}
+            placeholder="Enter Document ID (e.g. 1)"
+            className="w-full pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 rounded-lg text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 font-mono"
+          />
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
         <button
           type="submit"
           disabled={loading || !docIdInput}
-          className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer"
+          className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold rounded-lg disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:cursor-not-allowed shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1.5"
         >
-          {loading ? "Verifying Authorization..." : "View Document"}
+          {loading ? (
+            <>
+              <svg className="animate-spin w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
+              <span>Verifying Authorization...</span>
+            </>
+          ) : (
+            "View Document"
+          )}
         </button>
       </form>
 
       {/* Quick select associated documents */}
       {associatedDocs.length > 0 && (
         <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-          <span>Quick Select:</span>
+          <span className="font-semibold text-slate-700 dark:text-slate-300">Quick Select:</span>
           {associatedDocs.map((item, idx) => (
             <button
               key={`${item.id}-${item.role}-${idx}`}
@@ -195,8 +224,13 @@ export default function ViewerPortal() {
       {/* Access Denied / Error alert */}
       {error && (
         <div className="p-4 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 rounded-lg text-xs text-red-700 dark:text-red-200 space-y-1">
-          <p className="font-bold text-sm">&#9888; Authorization Check</p>
-          <p>{error}</p>
+          <div className="flex items-center gap-2 font-bold text-sm">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>Authorization Check Failed</span>
+          </div>
+          <p className="pl-6">{error}</p>
         </div>
       )}
 
@@ -214,20 +248,26 @@ export default function ViewerPortal() {
                 </span>
               )}
               {caseMeta?.category && (
-                <span className="px-2.5 py-0.5 rounded text-xs bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60 font-semibold">
+                <span className="px-2.5 py-0.5 rounded text-xs bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/60 font-semibold">
                   {caseMeta.category}
                 </span>
               )}
               {docInfo.isRejected ? (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-100 dark:bg-red-950/60 text-red-800 dark:text-red-300 border border-red-200 dark:border-red-800/60">
-                  &#10007; Rejected Submission
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800/60 inline-flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                  <span>Rejected Submission</span>
                 </span>
               ) : docInfo.isValid ? (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
-                  &#10003; Validated Evidence
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60 inline-flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Validated Evidence</span>
                 </span>
               ) : (
-                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
+                <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/60">
                   Pending Full Validation
                 </span>
               )}
@@ -236,28 +276,72 @@ export default function ViewerPortal() {
               <p className="text-xs text-slate-600 dark:text-slate-400 mt-1 italic">{caseMeta.description}</p>
             )}
             {docInfo.rejectionReason && (
-              <div className="mt-2 p-2.5 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200 rounded-md border border-red-200 dark:border-red-800/60 text-xs">
+              <div className="mt-2 p-2.5 bg-red-50 dark:bg-red-950/40 text-red-800 dark:text-red-200 rounded-lg border border-red-200 dark:border-red-800/60 text-xs">
                 <span className="font-semibold block mb-0.5">Rejection Justification:</span>
                 <span className="italic">{docInfo.rejectionReason}</span>
               </div>
             )}
-            <div className="mt-2 text-xs font-mono text-slate-600 dark:text-slate-300 space-y-1">
-              <p>
-                <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Provider:</span> {docInfo.provider}
-              </p>
-              <p>
-                <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Recipient:</span> {docInfo.recipient}
-              </p>
-              {docInfo.sha256Hash && (
-                <p className="break-all text-[11px]">
-                  <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">SHA-256 Fingerprint:</span>{" "}
-                  {docInfo.sha256Hash}
+            {/* Dual-Identity details */}
+            <div className="mt-3 text-xs font-mono text-slate-600 dark:text-slate-300 space-y-1.5 bg-slate-50 dark:bg-slate-800/60 p-3 rounded-lg border border-slate-200 dark:border-slate-700/80">
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate">
+                  <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Provider:</span>{" "}
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{docInfo.provider}</span>
                 </p>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(docInfo.provider, "provider")}
+                  className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer shrink-0"
+                >
+                  {copiedKey === "provider" ? <span className="text-emerald-600 text-[10px] font-sans">Copied!</span> : <span className="text-[10px] font-sans">Copy</span>}
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate">
+                  <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">Recipient:</span>{" "}
+                  <span className="text-slate-800 dark:text-slate-200 font-bold">{docInfo.recipient}</span>
+                </p>
+                <button
+                  type="button"
+                  onClick={() => copyToClipboard(docInfo.recipient, "recipient")}
+                  className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer shrink-0"
+                >
+                  {copiedKey === "recipient" ? <span className="text-emerald-600 text-[10px] font-sans">Copied!</span> : <span className="text-[10px] font-sans">Copy</span>}
+                </button>
+              </div>
+
+              {docInfo.sha256Hash && (
+                <div className="flex items-center justify-between gap-2">
+                  <p className="break-all text-[11px]">
+                    <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">SHA-256 Fingerprint:</span>{" "}
+                    <span className="text-emerald-700 dark:text-emerald-400 font-bold">{docInfo.sha256Hash}</span>
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(docInfo.sha256Hash, "sha256")}
+                    className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer shrink-0"
+                  >
+                    {copiedKey === "sha256" ? <span className="text-emerald-600 text-[10px] font-sans">Copied!</span> : <span className="text-[10px] font-sans">Copy</span>}
+                  </button>
+                </div>
               )}
-              <p className="break-all">
-                <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">IPFS CID:</span>{" "}
-                {cid ? cid : <span className="text-amber-700 dark:text-amber-400 font-sans italic">Not yet uploaded</span>}
-              </p>
+
+              <div className="flex items-center justify-between gap-2">
+                <p className="break-all">
+                  <span className="font-sans font-semibold text-slate-500 dark:text-slate-400">IPFS CID:</span>{" "}
+                  {cid ? <span className="text-indigo-600 dark:text-indigo-400 font-bold">{cid}</span> : <span className="text-amber-700 dark:text-amber-400 font-sans italic">Not yet uploaded</span>}
+                </p>
+                {cid && (
+                  <button
+                    type="button"
+                    onClick={() => copyToClipboard(cid, "cid")}
+                    className="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 cursor-pointer shrink-0"
+                  >
+                    {copiedKey === "cid" ? <span className="text-emerald-600 text-[10px] font-sans">Copied!</span> : <span className="text-[10px] font-sans">Copy</span>}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
 

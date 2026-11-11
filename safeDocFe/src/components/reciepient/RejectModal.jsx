@@ -86,31 +86,38 @@ export default function RejectModal({ documentId, onClose, onSuccess, userRole =
   }, [writeError]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm animate-fade-in text-left">
-      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-2xl w-full max-w-lg border border-red-100 dark:border-red-950/60 overflow-hidden transition-colors">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs text-left">
+      <div className="bg-white dark:bg-slate-900 rounded-xl shadow-xl w-full max-w-lg border border-slate-200 dark:border-slate-800 overflow-hidden transition-colors">
         {/* Header */}
-        <div className="p-5 bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-950/40 dark:to-orange-950/30 border-b border-red-100 dark:border-red-900/40 flex justify-between items-start">
+        <div className="p-5 border-b border-slate-200 dark:border-slate-800 flex justify-between items-start bg-red-50/50 dark:bg-red-950/20">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 flex items-center justify-center font-bold text-lg shadow-xs">
-              !
+            <div className="w-9 h-9 rounded-lg bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
             </div>
             <div>
               <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Formal Evidence Rejection</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-mono">Evidence Container #{documentId}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                Evidence Container <span className="font-mono font-semibold text-red-600 dark:text-red-400">#{documentId}</span>
+              </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xl font-bold p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            aria-label="Close"
           >
-            &times;
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
 
         {/* Form Body */}
         <form onSubmit={handleConfirmReject} className="p-6 space-y-4">
-          <div className="p-3 bg-red-50/70 dark:bg-red-950/30 rounded-xl border border-red-200/60 dark:border-red-900/40 text-xs text-red-900 dark:text-red-200 leading-relaxed">
+          <div className="p-3 bg-red-50/70 dark:bg-red-950/30 rounded-lg border border-red-200/60 dark:border-red-900/40 text-xs text-red-900 dark:text-red-200 leading-relaxed">
             <strong className="font-semibold block mb-0.5">Algorithm 2 Rollback Semantics:</strong>
             Rejecting this evidence marks this container as rejected on-chain, preventing further modification or approval.
             The provider will be notified to submit a linked resubmission with corrected evidence.
@@ -149,14 +156,20 @@ export default function RejectModal({ documentId, onClose, onSuccess, userRole =
           </div>
 
           {errorMsg && (
-            <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-red-700 dark:text-red-200 rounded-lg text-xs">
-              {errorMsg}
+            <div className="p-3 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-800/60 text-red-700 dark:text-red-200 rounded-lg text-xs flex items-start gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>{errorMsg}</span>
             </div>
           )}
 
           {(isSignPending || isTxConfirming) && (
             <div className="p-3 bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-amber-800 dark:text-amber-200 rounded-lg text-xs flex items-center gap-2">
-              <span className="animate-spin inline-block w-3.5 h-3.5 border-2 border-amber-600 dark:border-amber-400 border-t-transparent rounded-full" />
+              <svg className="animate-spin w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+              </svg>
               <span>
                 {isSignPending ? "Please sign rejection in MetaMask..." : "Recording rejection on blockchain..."}
               </span>
@@ -178,7 +191,17 @@ export default function RejectModal({ documentId, onClose, onSuccess, userRole =
               disabled={submitting || isSignPending || isTxConfirming || !effectiveReason}
               className="px-5 py-2 bg-red-600 hover:bg-red-700 text-white text-xs font-semibold rounded-lg shadow-xs transition-colors disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
             >
-              {submitting || isSignPending || isTxConfirming ? "Processing..." : "Confirm Formal Rejection"}
+              {submitting || isSignPending || isTxConfirming ? (
+                <>
+                  <svg className="animate-spin w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                  </svg>
+                  <span>Processing...</span>
+                </>
+              ) : (
+                "Confirm Formal Rejection"
+              )}
             </button>
           </div>
         </form>
